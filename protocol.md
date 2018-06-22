@@ -128,10 +128,10 @@ The command id correspondence is given in the following table:
 |CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		|3f3		|
 |CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|3f4		|
 |CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|3f5		|
-|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		||
-|CMD_TESTVOICE		|Play voice.				|1017		||
-|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		||
-|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		||
+|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		|3f6|
+|CMD_TESTVOICE		|Play voice.				|1017		|3f9|
+|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		|44c|
+|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		|44d|
 |CMD_AUTH		| |1102		|44e		|
 |CMD_PREPARE_DATA	| |1500		|5dc		|
 |CMD_DATA		| |1501		|5dd		|
