@@ -116,72 +116,72 @@ The command id correspondence is given in the following table:
 
 |Name			|Description				|Value[base10]	|Value[hex]	|
 |---			|---					|---		|---		|
-|CMD_CONNECT		|Begin connection.			|1000		|3e8		|
-|CMD_EXIT		|Disconnect.				|1001		|3e9		|
-|CMD_ENABLEDEVICE	|Change machine state to "normal work".	|1002		|3ea		|
-|CMD_DISABLEDEVICE	|Change machine state to "busy".	|1003		|3eb		|
-|CMD_RESTART		|Restart machine.			|1004		|3ec		|
-|CMD_POWEROFF		|Shut-down machine.			|1005		|3ed		|
-|CMD_SLEEP		|Change machine state to "idle".	|1006		|3ee		|
-|CMD_RESUME		|Change machine state to "awaken".	|1007		|3ef		|
-|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		|3f1		|
-|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		|3f3		|
-|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|3f4		|
-|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|3f5		|
-|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		|3f6|
-|CMD_TESTVOICE		|Play voice.				|1017		|3f9|
-|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		|44c|
-|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		|44d|
-|CMD_AUTH		| |1102		|44e		|
-|CMD_PREPARE_DATA	| |1500		|5dc		|
-|CMD_DATA		| |1501		|5dd		|
-|CMD_FREE_DATA		| |1502		|5de		|
-|CMD_DB_RRQ		| |7		|7		|
-|CMD_USER_WRQ		| |8		|8		|
-|CMD_USERTEMP_RRQ	| |9		|9		|
-|CMD_USERTEMP_WRQ	| |10		|a		|
-|CMD_OPTIONS_RRQ	| |11		|b		|
-|CMD_OPTIONS_WRQ	| |12		|c		|
-|CMD_ATTLOG_RRQ		| |13		|d		|
-|CMD_CLEAR_DATA		| |14		|e		|
-|CMD_CLEAR_ATTLOG	| |15		|f		|
-|CMD_DELETE_USER	| |18		|12		|
-|CMD_DELETE_USERTEMP	| |19		|13		|
-|CMD_CLEAR_ADMIN	| |20		|14		|
-|CMD_USERGRP_RRQ	| |21		|15		|
-|CMD_USERGRP_WRQ	| |22		|16		|
-|CMD_USERTZ_RRQ		| |23		|17		|
-|CMD_USERTZ_WRQ		| |24		|18		|
-|CMD_GRPTZ_RRQ		| |25		|19		|
-|CMD_GRPTZ_WRQ		| |26		|1a		|
-|CMD_TZ_RRQ		| |27		|1b		|
-|CMD_TZ_WRQ		| |28		|1c		|
-|CMD_ULG_RRQ		| |29		|1d		|
-|CMD_ULG_WRQ		| |30		|1e		|
-|CMD_UNLOCK		| |31		|1f		|
-|CMD_CLEAR_ACC		| |32		|20		|
-|CMD_CLEAR_OPLOG	| |33		|21		|
-|CMD_OPLOG_RRQ		| |34		|22		|
-|CMD_GET_FREE_SIZES	| |50		|32		|
-|CMD_ENABLE_CLOCK	| |57		|39		|
-|CMD_STARTVERIFY	| |60		|3c		|
-|CMD_STARTENROLL	| |61		|3d		|
-|CMD_CANCELCAPTURE	| |62		|3e		|
-|CMD_STATE_RRQ		| |64		|40		|
-|CMD_WRITE_LCD		| |66		|42		|
-|CMD_CLEAR_LCD		| |67		|43		|
-|CMD_GET_PINWIDTH	| |69		|45		|
-|CMD_SMS_WRQ		| |70		|46		|
-|CMD_SMS_RRQ		| |71		|47		|
-|CMD_DELETE_SMS		| |72		|48		|
-|CMD_UDATA_WRQ		| |73		|49		|
-|CMD_DELETE_UDATA	| |74		|4a		|
-|CMD_DOORSTATE_RRQ	| |75		|4b		|
-|CMD_WRITE_MIFARE	| |76		|4c		|
-|CMD_EMPTY_MIFARE	| |78		|4e		|
-|CMD_GET_TIME		| |201		|c9		|
-|CMD_SET_TIME		| |202		|ca		|
-|CMD_REG_EVENT		| |500		|1f4		|
+|CMD_CONNECT		|Begin connection.			|1000		|03e8		|
+|CMD_EXIT		|Disconnect.				|1001		|03e9		|
+|CMD_ENABLEDEVICE	|Change machine state to "normal work".	|1002		|03ea		|
+|CMD_DISABLEDEVICE	|Change machine state to "busy".	|1003		|03eb		|
+|CMD_RESTART		|Restart machine.			|1004		|03ec		|
+|CMD_POWEROFF		|Shut-down machine.			|1005		|03ed		|
+|CMD_SLEEP		|Change machine state to "idle".	|1006		|03ee		|
+|CMD_RESUME		|Change machine state to "awaken".	|1007		|03ef		|
+|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		|03f1		|
+|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		|03f3		|
+|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|03f4		|
+|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|03f5		|
+|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		|03f6|
+|CMD_TESTVOICE		|Play voice.				|1017		|03f9|
+|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		|044c|
+|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		|044d|
+|CMD_AUTH		| |1102		|044e		|
+|CMD_PREPARE_DATA	| |1500		|05dc		|
+|CMD_DATA		| |1501		|05dd		|
+|CMD_FREE_DATA		| |1502		|05de		|
+|CMD_DB_RRQ		| |7		|0007		|
+|CMD_USER_WRQ		| |8		|0008		|
+|CMD_USERTEMP_RRQ	| |9		|0009		|
+|CMD_USERTEMP_WRQ	| |10		|000a		|
+|CMD_OPTIONS_RRQ	| |11		|000b		|
+|CMD_OPTIONS_WRQ	| |12		|000c		|
+|CMD_ATTLOG_RRQ		| |13		|000d		|
+|CMD_CLEAR_DATA		| |14		|000e		|
+|CMD_CLEAR_ATTLOG	| |15		|000f		|
+|CMD_DELETE_USER	| |18		|0012		|
+|CMD_DELETE_USERTEMP	| |19		|0013		|
+|CMD_CLEAR_ADMIN	| |20		|0014		|
+|CMD_USERGRP_RRQ	| |21		|0015		|
+|CMD_USERGRP_WRQ	| |22		|0016		|
+|CMD_USERTZ_RRQ		| |23		|0017		|
+|CMD_USERTZ_WRQ		| |24		|0018		|
+|CMD_GRPTZ_RRQ		| |25		|0019		|
+|CMD_GRPTZ_WRQ		| |26		|001a		|
+|CMD_TZ_RRQ		| |27		|001b		|
+|CMD_TZ_WRQ		| |28		|001c		|
+|CMD_ULG_RRQ		| |29		|001d		|
+|CMD_ULG_WRQ		| |30		|001e		|
+|CMD_UNLOCK		| |31		|001f		|
+|CMD_CLEAR_ACC		| |32		|0020		|
+|CMD_CLEAR_OPLOG	| |33		|0021		|
+|CMD_OPLOG_RRQ		| |34		|0022		|
+|CMD_GET_FREE_SIZES	| |50		|0032		|
+|CMD_ENABLE_CLOCK	| |57		|0039		|
+|CMD_STARTVERIFY	| |60		|003c		|
+|CMD_STARTENROLL	| |61		|003d		|
+|CMD_CANCELCAPTURE	| |62		|003e		|
+|CMD_STATE_RRQ		| |64		|0040		|
+|CMD_WRITE_LCD		| |66		|0042		|
+|CMD_CLEAR_LCD		| |67		|0043		|
+|CMD_GET_PINWIDTH	| |69		|0045		|
+|CMD_SMS_WRQ		| |70		|0046		|
+|CMD_SMS_RRQ		| |71		|0047		|
+|CMD_DELETE_SMS		| |72		|0048		|
+|CMD_UDATA_WRQ		| |73		|0049		|
+|CMD_DELETE_UDATA	| |74		|004a		|
+|CMD_DOORSTATE_RRQ	| |75		|004b		|
+|CMD_WRITE_MIFARE	| |76		|004c		|
+|CMD_EMPTY_MIFARE	| |78		|004e		|
+|CMD_GET_TIME		| |201		|00c9		|
+|CMD_SET_TIME		| |202		|00ca		|
+|CMD_REG_EVENT		| |500		|01f4		|
 
 See the codification of reply codes in the following table:
 
@@ -279,7 +279,7 @@ The contents of this field depend on the procedure. See Specific Operations sect
 
 For realtime packets the payload differs a little from a regular packet:
 
-- The command id is always CMD_REG_EVENT.
+- The command id is always `CMD_REG_EVENT`.
 - The session id field is used to store the event code.
 - The reply number is set to zero.
 
@@ -292,7 +292,7 @@ For realtime packets the payload differs a little from a regular packet:
 |data		|Specific data for the given report.	|varies		|payload_size-8	|8	|
 
 (<): Little endian format.
-(t): This id corresponds to the command CMD_REG_EVENT(0x1f4).
+(t): This id corresponds to the command `CMD_REG_EVENT`(0x1f4).
 
 #### Event Codes ####
 
@@ -353,6 +353,15 @@ This is summarized with the notation:
 	rtpacket(event=<event code>, data=<payload data>)
 
 In this notation the event code is given in big endian (as seen on the table of event codes), and the data could be given as a textual description or as a sequence of hex numbers.
+
+#### Conversations ####
+
+For long packet conversations the following notation is used:
+
+	> "message from client to machine"
+		> "message from machine to client"
+	> "message from client to machine"
+		> "message from machine to client"
 
 ### Terminal Operations ###
 
