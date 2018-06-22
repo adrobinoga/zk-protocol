@@ -52,7 +52,7 @@ The terminals are considered a **server**, so when attendance records are reques
 
 When there are "intensive" operations (i.e. too much changes/transactions) the procedures begin with a disable-device command, this could be to prevent undefined behavior in the device. For small tasks, like get-device-time, there is no need for disabling and enabling the device. Simple tasks usually consist of a request followed by a reply.
 
-Based on the SDK design, a classification of the protocol functions can be made.
+Based on the SDK design, a classification of the protocol functions can be made:
 
 - **Terminal operations**: Includes, procedures to manage communication with the machine, get/set time of device and to request generic information(device type, matching algorithm, etc).
 - **Data operations**: Procedures to manage data in the device, they can be further divided according to the data to be modified.
@@ -283,13 +283,13 @@ For realtime packets the payload differs a little from a regular packet:
 - The session id field is used to store the event code.
 - The reply number is set to zero.
 
-|Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
-|---		|---						|---		|---		|---	|
-|command id	|Command identifier/Reply code.			|0xf401(t)	|2		|0	|
-|checksum	|Checksum.					|varies(<)	|2		|2	|
-|event		|Event code identifier.				|varies(<)	|2		|4	|
-|reply number	|Reply number.					|0x0000		|2		|6	|
-|data		|Specific data for the given report.		|varies		|payload_size-8	|8	|
+|Name		|Description				|Value[hex]	|Size[bytes]	|Offset	|
+|---		|---					|---		|---		|---	|
+|command id	|Command identifier/Reply code.		|0xf401(t)	|2		|0	|
+|checksum	|Checksum.				|varies(<)	|2		|2	|
+|event		|Event code identifier.			|varies(<)	|2		|4	|
+|reply number	|Reply number.				|0x0000		|2		|6	|
+|data		|Specific data for the given report.	|varies		|payload_size-8	|8	|
 
 (<): Little endian format.
 (t): This id corresponds to the command CMD_REG_EVENT(0x1f4).
