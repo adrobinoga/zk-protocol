@@ -18,7 +18,7 @@ They provide the [ZKAccess](https://www.zkteco.com/en/product_detail/158.html) s
 
 ## Terminology ##
 
-The documentation provided by ZKTeco, sometimes shows acronyms without a prior definition, here we provide a list of useful terms that you may found in this wiki and in other documents.
+The documentation provided by ZKTeco, sometimes shows acronyms without prior definition, here we provide a list of useful terms that you may found in this wiki and in other documents.
 
 |Term		|Meaning|
 |---		|---|
@@ -34,10 +34,11 @@ The documentation provided by ZKTeco, sometimes shows acronyms without a prior d
 
 ## Protocol Overview ##
 
-The standalone terminals are called in that way because they may be used without any communication with a "coordinator" or "manager", like the ZKAccess software, so the protocol is designed to:
+The **standalone** terminals are called in that way because they may be used without any communication with a "coordinator" or "manager", like the ZKAccess software, so the protocol is designed to:
 
 - Get info from terminals: Attendance records, new users(added in the standalone terminal), device model, status, etc. The ZKAccess program, builds a database with this info.
 - Set info in terminals: Add users, change access permissions, change device settings, etc.
+- Report events: Corresponds to packets sent from the machine when specific actions take place, they are sent without a previous request.
 
 Note that the communication can be done through:
 
@@ -49,7 +50,7 @@ Here we consider a communication setup with TCP/IP.
 
 The terminals are considered a **server**, so when attendance records are requested, this is referred as a **download** operation, in a similar way, when data is sent from PC to the device, this is referred as an **upload** operation.
 
-When there are "intensive" operations (i.e. too much changes/transactions) the procedures begin with a disable-device command, this could be to prevent undefined behavior in the device. For small tasks, like get-device-time, there is no need for disabling and enabling the device. Simple task usually consist of a request followed by a reply.
+When there are "intensive" operations (i.e. too much changes/transactions) the procedures begin with a disable-device command, this could be to prevent undefined behavior in the device. For small tasks, like get-device-time, there is no need for disabling and enabling the device. Simple tasks usually consist of a request followed by a reply.
 
 Based on the SDK design, a classification of the protocol functions can be made.
 
@@ -77,16 +78,21 @@ All packets have the following fields:
 
 |Name		|Description			|Value[hex]	|Size[bytes]	|Offset|
 |---		|---				|---		|---		|---	|
-|start		|Indicates start of packet.	|5050827D	|4		|0	|
+|start		|Indicates start of packet.	|5050827d	|4		|0	|
 |payload size	|Size of packet payload.	|payload_size(<)|2		|4	|
 |zeros		|Null bytes.			|0000		|2		|6	|
-|payload	|Packet payload.		|varies(<)	|payload_size	|8	|
+|payload	|Packet payload.		|varies	|payload_size	|8	|
+
 (<): Little endian format.
 
+The packets can be divided in regular packets and in realtime packets:
+- Regular packets: These are the packets used for normal request and reply procedures.
+- Realtime packets: These are the packets used to report events, the are sent by the machine without a previous connection, if a connection exists.
 
-### Payload Packet ###
 
-The payload packet can also be decomposed in more fields:
+### Regular Packet Payload###
+
+For regular packets the payload can be decomposed in the following fields:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---						|---		|---		|---	|
@@ -95,6 +101,7 @@ The payload packet can also be decomposed in more fields:
 |session id	|Session id.					|varies(<)	|2		|4	|
 |reply number	|Reply number.					|varies(<)	|2		|6	|
 |data		|Specific data for the given command/reply.	|varies		|payload_size-8	|8	|
+
 (<): Little endian format.
 
 
@@ -109,23 +116,36 @@ The command id correspondence is given in the following table:
 
 |Name			|Description				|Value[base10]	|Value[hex]	|
 |---			|---					|---		|---		|
-|CMD_CONNECT		|Begin connection.			|1000		|3E8		|
-|CMD_EXIT		|Disconnect.				|1001		|3E9		|
-|CMD_ENABLEDEVICE	|Change machine state to "normal work".	|1002		|3EA		|
-|CMD_DISABLEDEVICE	|Change machine state to "busy".	|1003		|3EB		|
-|CMD_RESTART		|Restart machine.			|1004		|3EC		|
-|CMD_POWEROFF		|Shut-down machine.			|1005		|3ED		|
-|CMD_SLEEP		|Change machine state to "idle".	|1006		|3EE		|
-|CMD_RESUME		|Change machine state to "awaken".	|1007		|3EF		|
-|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		| |
-|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		| |
-|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		| |
-|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		| |
+|CMD_CONNECT		|Begin connection.			|1000		|3e8		|
+|CMD_EXIT		|Disconnect.				|1001		|3e9		|
+|CMD_ENABLEDEVICE	|Change machine state to "normal work".	|1002		|3ea		|
+|CMD_DISABLEDEVICE	|Change machine state to "busy".	|1003		|3eb		|
+|CMD_RESTART		|Restart machine.			|1004		|3ec		|
+|CMD_POWEROFF		|Shut-down machine.			|1005		|3ed		|
+|CMD_SLEEP		|Change machine state to "idle".	|1006		|3ee		|
+|CMD_RESUME		|Change machine state to "awaken".	|1007		|3ef		|
+|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		| 3f1|
+|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		| 3f3|
+|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|3f4 |
+|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|3f5 |
 |CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		| |
 |CMD_TESTVOICE		|Play voice.				|1017		| |
 |CMD_GET_VERSION	|Obtain the firmware edition.		|1100		| |
 
+See the codification of reply codes in the following table:
 
+|Name			|Description				|Value[base10]	|Value[hex]	|
+|---			|---					|---		|---		|
+|CMD_ACK_OK		| The request was processed sucessfully| 2000		|7d0		|
+|CMD_ACK_ERROR | There was an error when processing the request | 2001 | 7d1 |
+|CMD_ACK_DATA| | 2002  | 7d2 |
+|CMD_ACK_RETRY | |2003| 7d3 |
+|CMD_ACK_REPEAT| |2004 | 7d4 |
+|CMD_ACK_UNAUTH | | 2005 | 7d5 |
+|CMD_ACK_UNKNOWN | | 65535| ffff |
+|CMD_ACK_ERROR_CMD | | 65533 | fffd |
+|CMD_ACK_ERROR_INIT | | 65532 | fffc |
+|CMD_ACK_ERROR_DATA | | 65531 | fffb |
 
 #### Checksum ####
 
@@ -156,7 +176,7 @@ while j<len(payload):
 	j += 2 
 
 # adds the two first bytes to the other two bytes
-chk_32b = (chk_32b & 0xFFFF) + ((chk_32b & 0xFFFF0000)>>16)
+chk_32b = (chk_32b & 0xffff) + ((chk_32b & 0xffff0000)>>16)
 
 # calculate ones complement to get final checksum (in big endian)
 chk_16b = hex(chk_32b ^ 0xFFFF)
@@ -168,54 +188,122 @@ chk_16b = hex(chk_32b ^ 0xFFFF)
 
 **1.**
 ```
-0B005A17F38D03005A4B4661636556657273696F6E00
+0b005a17f38d03005a4b4661636556657273696f6e00
 ```
-After removing the checksum `5A17`.
+After removing the checksum `5a17`.
 
 ```
-0B00F38D03005A4B4661636556657273696F6E00
+0b00f38d03005a4b4661636556657273696f6e00
 ```
 
-The calculation of the checksum should give you `175A`.
+The calculation of the checksum should give you `175a`.
 
 **2.**
 
 Example packet, with checksum:
 ```
-D007296AF38D0A0009
+d007296af38d0a0009
 ```
 
-The checksum should give you `6A29`.
+The checksum should give you `6a29`.
 
 
 #### Session ID ####
+
 The session identifier it is a unique number assigned for every new connection, the machine returns the assigned session id after a connection request.
 
 
 #### Reply Number ####
-After a successful connection the counter starts from zero counting the number of replies, a command sent to the machine carries this reply counter and this number is the same for a valid reply from the machine, this is a way to discard reply packets that do not correspond to the sent packets.
+
+After a successful connection the counter starts from zero counting the number of replies, a command sent to the machine carries this reply counter and this number is the same for a valid reply from the machine.
 
 
 #### Data ####
 
-The contents of this field depend on the procedure command/reply.
-See specific sections.
+The contents of this field depend on the procedure. See Specific Operations sections.
+
+### Realtime Packet Payload###
+
+For realtime packets the payload differs a little from a regular packet:
+
+- The command id is always CMD_REG_EVENT.
+- The session id field is used to store the event code.
+- The reply number is set to zero.
+
+|Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
+|---		|---						|---		|---		|---	|
+|command id	|Command identifier/Reply code.			|0xf401(t)	|2		|0	|
+|checksum	|Checksum.					|varies(<)	|2		|2	|
+|event	|Event code identifier.				|varies(<)	|2		|4	|
+|reply number	|Reply number.					| 0x0000 |2		|6	|
+|data		|Specific data for the given report.	|varies		|payload_size-8	|8	|
+
+(<): Little endian format.
+(t): This id corresponds to the command CMD_REG_EVENT(0x1f4).
 
 
-## Terminal Operations ##
+## Specific Operations ##
 
+### Conventions ###
 
-## Data Operations ##
+In the following descriptions some conventions are used to make protocol descriptions simple but precise.
 
+#### Regular Packet Creation ####
 
-## Access Operations ##
+The packet formation process was presented in previous sections, the notation:
 
+	packet(id=<command/reply code>, data=<payload data>)
 
-## Realtime Operations ##
+Is a compact format to refer to a packet with the format:
 
+|Name		|Description			|Value[hex]	|Size[bytes]	|Offset|
+|---		|---				|---		|---		|---	|
+|start		|Indicates start of packet.	|5050827d	|4		|0	|
+|payload size	|Size of packet payload.	|payload_size(<)|2		|4	|
+|zeros		|Null bytes.			|0000		|2		|6	|
+|**id**	|Command identifier/Reply code.			|varies(<)	|2		|8	|
+|checksum	|Checksum.					|varies(<)	|2		|10	|
+|session id	|Session id.					|varies(<)	|2		|12	|
+|reply number	|Reply number.					|varies(<)	|2		|14	|
+|**data**		|Specific data for the given command/reply.	|varies		|payload_size-8	|16	|
 
-## Misc Operations ##
+(<): Little endian format.
 
+Where the others fields, the `payload size`, `checksum`, `session id` and `reply number` are calculated from context and the given packet parameters.
+
+When data parameter is absent, an empty `payload data` field should be assumed.
+
+Also, in this notation the id code is given in big endian (as seen on the table of command codes), and the data could be given as a textual description or as a sequence of hex numbers.
+
+#### Realtime Packet Creation ####
+
+What differs from a regular packet and a realtime packets are just the `session id` and `reply number` fields. Beyond that the other fields `payload size` and `checksum`, are calculated same as before.
+
+This is summarized with the notation:
+
+	rtpacket(event=<event code>, data=<payload data>)
+
+In this notation the event code is given in big endian (as seen on the table of event codes), and the data could be given as a textual description or as a sequence of hex numbers.
+
+### Terminal Operations ###
+
+See [terminal.md](./sections/terminal.md)
+
+### Data Operations ###
+
+See [data.md](./sections/data.md)
+
+### Access Operations ###
+
+See [access.md](./sections/access.md)
+
+### Realtime Operations ###
+
+See [realtime.md](./sections/realtime.md)
+
+### Misc Operations ###
+
+See [misc.md](./sections/misc.md)
 
 ## Links and Sources ##
 
