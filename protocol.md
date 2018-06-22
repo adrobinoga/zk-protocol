@@ -76,12 +76,12 @@ Based on the SDK design, a classification of the protocol functions can be made.
 
 All packets have the following fields:
 
-|Name		|Description			|Value[hex]	|Size[bytes]	|Offset|
+|Name		|Description			|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---				|---		|---		|---	|
 |start		|Indicates start of packet.	|5050827d	|4		|0	|
 |payload size	|Size of packet payload.	|payload_size(<)|2		|4	|
 |zeros		|Null bytes.			|0000		|2		|6	|
-|payload	|Packet payload.		|varies	|payload_size	|8	|
+|payload	|Packet payload.		|varies		|payload_size	|8	|
 
 (<): Little endian format.
 
@@ -90,7 +90,7 @@ The packets can be divided in regular packets and in realtime packets:
 - Realtime packets: These are the packets used to report events, the are sent by the machine without a previous connection, if a connection exists.
 
 
-### Regular Packet Payload###
+### Regular Packet Payload ###
 
 For regular packets the payload can be decomposed in the following fields:
 
@@ -124,28 +124,80 @@ The command id correspondence is given in the following table:
 |CMD_POWEROFF		|Shut-down machine.			|1005		|3ed		|
 |CMD_SLEEP		|Change machine state to "idle".	|1006		|3ee		|
 |CMD_RESUME		|Change machine state to "awaken".	|1007		|3ef		|
-|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		| 3f1|
-|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		| 3f3|
-|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|3f4 |
-|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|3f5 |
-|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		| |
-|CMD_TESTVOICE		|Play voice.				|1017		| |
-|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		| |
+|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		|3f1		|
+|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		|3f3		|
+|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|3f4		|
+|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|3f5		|
+|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		||
+|CMD_TESTVOICE		|Play voice.				|1017		||
+|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		||
+|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		||
+|CMD_AUTH		| |1102		|		|
+|CMD_PREPARE_DATA	| |1500		|		|
+|CMD_DATA		| |1501		|		|
+|CMD_FREE_DATA		| |1502		|		|
+|CMD_DB_RRQ		| |7		|		|
+|CMD_USER_WRQ		| |8		|		|
+|CMD_USERTEMP_RRQ	| |9		|		|
+|CMD_USERTEMP_WRQ	| |10		|		|
+|CMD_OPTIONS_RRQ	| |11		|		|
+|CMD_OPTIONS_WRQ	| |12		|		|
+|CMD_ATTLOG_RRQ		| |13		|		|
+|CMD_CLEAR_DATA		| |14		|		|
+|CMD_CLEAR_ATTLOG	| |15		|		|
+|CMD_DELETE_USER	| |18		|		|
+|CMD_DELETE_USERTEMP	| |19		|		|
+|CMD_CLEAR_ADMIN	| |20		|		|
+|CMD_USERGRP_RRQ	| |21		|		|
+|CMD_USERGRP_WRQ	| |22		|		|
+|CMD_USERTZ_RRQ		| |23		|		|
+|CMD_USERTZ_WRQ		| |24		|		|
+|CMD_GRPTZ_RRQ		| |25		|		|
+|CMD_GRPTZ_WRQ		| |26		|		|
+|CMD_TZ_RRQ		| |27		|		|
+|CMD_TZ_WRQ		| |28		|		|
+|CMD_ULG_RRQ		| |29		|		|
+|CMD_ULG_WRQ		| |30		|		|
+|CMD_UNLOCK		| |31		|		|
+|CMD_CLEAR_ACC		| |32		|		|
+|CMD_CLEAR_OPLOG	| |33		|		|
+|CMD_OPLOG_RRQ		| |34		|		|
+|CMD_GET_FREE_SIZES	| |50		|		|
+|CMD_ENABLE_CLOCK	| |57		|		|
+|CMD_STARTVERIFY	| |60		|		|
+|CMD_STARTENROLL	| |61		|		|
+|CMD_CANCELCAPTURE	| |62		|		|
+|CMD_STATE_RRQ		| |64		|		|
+|CMD_WRITE_LCD		| |66		|		|
+|CMD_CLEAR_LCD		| |67		|		|
+|CMD_GET_PINWIDTH	| |69		|		|
+|CMD_SMS_WRQ		| |70		|		|
+|CMD_SMS_RRQ		| |71		|		|
+|CMD_DELETE_SMS		| |72		|		|
+|CMD_UDATA_WRQ		| |73		|		|
+|CMD_DELETE_UDATA	| |74		|		|
+|CMD_DOORSTATE_RRQ	| |75		|		|
+|CMD_WRITE_MIFARE	| |76		|		|
+|CMD_EMPTY_MIFARE	| |78		|		|
+|CMD_GET_TIME		| |201		|		|
+|CMD_SET_TIME		| |202		|		|
+|CMD_REG_EVENT		| |500		|		|
 
 See the codification of reply codes in the following table:
 
-|Name			|Description				|Value[base10]	|Value[hex]	|
-|---			|---					|---		|---		|
-|CMD_ACK_OK		| The request was processed sucessfully| 2000		|7d0		|
-|CMD_ACK_ERROR | There was an error when processing the request | 2001 | 7d1 |
-|CMD_ACK_DATA| | 2002  | 7d2 |
-|CMD_ACK_RETRY | |2003| 7d3 |
-|CMD_ACK_REPEAT| |2004 | 7d4 |
-|CMD_ACK_UNAUTH | | 2005 | 7d5 |
-|CMD_ACK_UNKNOWN | | 65535| ffff |
-|CMD_ACK_ERROR_CMD | | 65533 | fffd |
-|CMD_ACK_ERROR_INIT | | 65532 | fffc |
-|CMD_ACK_ERROR_DATA | | 65531 | fffb |
+|Name			|Description						|Value[base10]	|Value[hex]	|
+|---			|---							|---		|---		|
+|CMD_ACK_OK		|The request was processed sucessfully.			|2000		|07d0		|
+|CMD_ACK_ERROR		|There was an error when processing the request.	|2001		|07d1		|
+|CMD_ACK_DATA		|							|2002		|07d2		|
+|CMD_ACK_RETRY		|							|2003		|07d3		|
+|CMD_ACK_REPEAT		|							|2004		|07d4		|
+|CMD_ACK_UNAUTH		|							|2005		|07d5		|
+|CMD_ACK_UNKNOWN	|							|65535		|ffff		|
+|CMD_ACK_ERROR_CMD	|							|65533		|fffd		|
+|CMD_ACK_ERROR_INIT	|							|65532		|fffc		|
+|CMD_ACK_ERROR_DATA	|							|65531		|fffb		|
+
 
 #### Checksum ####
 
@@ -222,6 +274,7 @@ After a successful connection the counter starts from zero counting the number o
 
 The contents of this field depend on the procedure. See Specific Operations sections.
 
+
 ### Realtime Packet Payload###
 
 For realtime packets the payload differs a little from a regular packet:
@@ -234,12 +287,28 @@ For realtime packets the payload differs a little from a regular packet:
 |---		|---						|---		|---		|---	|
 |command id	|Command identifier/Reply code.			|0xf401(t)	|2		|0	|
 |checksum	|Checksum.					|varies(<)	|2		|2	|
-|event	|Event code identifier.				|varies(<)	|2		|4	|
-|reply number	|Reply number.					| 0x0000 |2		|6	|
-|data		|Specific data for the given report.	|varies		|payload_size-8	|8	|
+|event		|Event code identifier.				|varies(<)	|2		|4	|
+|reply number	|Reply number.					|0x0000		|2		|6	|
+|data		|Specific data for the given report.		|varies		|payload_size-8	|8	|
 
 (<): Little endian format.
 (t): This id corresponds to the command CMD_REG_EVENT(0x1f4).
+
+#### Event Codes ####
+
+The following table shows the codification for realtime events:
+
+|Name			|Description		|Value[base10]	|Value[hex]	|
+|---			|---			|---		|---		|
+|EF_ATTLOG		|			|1		|1		|
+|EF_FINGER		|			|2		|2		|
+|EF_ENROLLUSER		|			|4		|4		|
+|EF_ENROLLFINGER	|			|8		|8		|
+|EF_BUTTON		|			|16		|10		|
+|EF_UNLOCK		|			|32		|20		|
+|EF_VERIFY		|			|128		|80		|
+|EF_FPFTR		|			|256		|100		|
+|EF_ALARM		|			|512		|200		|
 
 
 ## Specific Operations ##
@@ -256,16 +325,16 @@ The packet formation process was presented in previous sections, the notation:
 
 Is a compact format to refer to a packet with the format:
 
-|Name		|Description			|Value[hex]	|Size[bytes]	|Offset|
-|---		|---				|---		|---		|---	|
-|start		|Indicates start of packet.	|5050827d	|4		|0	|
-|payload size	|Size of packet payload.	|payload_size(<)|2		|4	|
-|zeros		|Null bytes.			|0000		|2		|6	|
-|**id**	|Command identifier/Reply code.			|varies(<)	|2		|8	|
+|Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
+|---		|---						|---		|---		|---	|
+|start		|Indicates start of packet.			|5050827d	|4		|0	|
+|payload size	|Size of packet payload.			|payload_size(<)|2		|4	|
+|zeros		|Null bytes.					|0000		|2		|6	|
+|**id**		|Command identifier/Reply code.			|varies(<)	|2		|8	|
 |checksum	|Checksum.					|varies(<)	|2		|10	|
 |session id	|Session id.					|varies(<)	|2		|12	|
 |reply number	|Reply number.					|varies(<)	|2		|14	|
-|**data**		|Specific data for the given command/reply.	|varies		|payload_size-8	|16	|
+|**data**	|Specific data for the given command/reply.	|varies		|payload_size-8	|16	|
 
 (<): Little endian format.
 
