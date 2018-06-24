@@ -128,10 +128,10 @@ The command id correspondence is given in the following table:
 |CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		|03f3		|
 |CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|03f4		|
 |CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|03f5		|
-|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		|03f6|
-|CMD_TESTVOICE		|Play voice.				|1017		|03f9|
-|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		|044c|
-|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		|044d|
+|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		|03f6		|
+|CMD_TESTVOICE		|Play voice.				|1017		|03f9		|
+|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		|044c		|
+|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		|044d		|
 |CMD_AUTH		| |1102		|044e		|
 |CMD_PREPARE_DATA	| |1500		|05dc		|
 |CMD_DATA		| |1501		|05dd		|
@@ -267,8 +267,16 @@ The session identifier it is a unique number assigned for every new connection, 
 
 #### Reply Number ####
 
-After a successful connection the counter starts from zero counting the number of replies, a command sent to the machine carries this reply counter and this number is the same for a valid reply from the machine.
+After a successful connection the counter starts from zero counting the number of replies, a command sent to the machine carries this reply counter and this number is the same for a valid reply from the machine. After receiving a reply from the machine, the counter becomes incremented and this new value is sent in the next request.
 
+The reply number should evolve like this:
+
+	> 0000
+		> 0000
+	> 0001
+		> 0001
+	> 0002
+		> 0002
 
 #### Data ####
 
@@ -344,6 +352,8 @@ When data parameter is absent, an empty `payload data` field should be assumed.
 
 Also, in this notation the id code is given in big endian (as seen on the table of command codes), and the data could be given as a textual description or as a sequence of hex numbers.
 
+Some type of commands have a data field that it is always terminated in `0x00`, this is a way to indicate the end of a string, in this documentation this value is always shown to prevent ambiguity, it may be shown as `00` if it is a sequence of hex numbers or it may be shown as `\x00`, if a string is used.
+
 #### Realtime Packet Creation ####
 
 What differs from a regular packet and a realtime packets are just the `session id` and `reply number` fields. Beyond that the other fields `payload size` and `checksum`, are calculated same as before.
@@ -356,7 +366,7 @@ In this notation the event code is given in big endian (as seen on the table of 
 
 #### Conversations ####
 
-For long packet conversations the following notation is used:
+For packet conversations the following notation is used:
 
 	> "message from client to machine"
 		> "message from machine to client"
