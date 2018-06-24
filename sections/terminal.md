@@ -6,7 +6,7 @@ Author: Alexander Marin <alexanderm2230@gmail.com>
 
 [TOC]
 
-## Present Descriptions ##
+## Current Descriptions ##
 
 Here is a list of SDK functions, from **Terminal.h** and **Property.h** files, that shows which functions can be replicated with the current spec:
 
@@ -18,13 +18,13 @@ Here is a list of SDK functions, from **Terminal.h** and **Property.h** files, t
 |Disconnect			|**X**			|Only for TCP/IP.|
 |IsTFTMachine			|**X**			|Same result can be obtained with GetPlatform function.|
 |GetDeviceStatus		|**X**			| |
-|GetDeviceInfo			|**X**			| |
-|SetDeviceInfo			|**X**			| |
+|GetDeviceInfo			|**X**			|See Generic Requests section. |
+|SetDeviceInfo			|**X**			|See Generic Requests section. |
 |GetDeviceTime			|**X**			| |
 |SetDeviceTime			|**X**			| |
 |GetSerialNumber		|**X**			|See Generic Requests section.|
 |GetProductCode			|**X**			|See Generic Requests section.|
-|GetFirmwareVersion		|**X**			|See Get Parameters section.|
+|GetFirmwareVersion		|**X**			| |
 |GetSDKVersion			|**O**			|This has nothing to do with the machine.|
 |GetDeviceIP			|**O**			|Irrelevant.|
 |SetDeviceIP			|**O**			|Irrelevant.|
@@ -33,9 +33,9 @@ Here is a list of SDK functions, from **Terminal.h** and **Property.h** files, t
 |GetWiegandFmt			|**O**			|Irrelevant.|
 |SetWiegandFmt			|**O**			|Irrelevant.|
 |GetCardFun			|**X**			|See Generic Requests section.|
-|SetDeviceCommPwd|**O**|Irrelevant.|
-|SetCommPassword|**O**|Irrelevant.|
-|QueryState			|**X**			|See Get Parameters section.|
+|SetDeviceCommPwd		|**O**			|Irrelevant.|
+|SetCommPassword		|**O**			|Irrelevant.|
+|QueryState			|**X**			| |
 |GetVendor			|**X**			|See Generic Requests section.|
 |GetDeviceStrInfo		|**X**			|See Generic Requests section.|
 |GetPlatform			|**X**			|See Generic Requests section.|
@@ -153,9 +153,9 @@ To request the device time send a `CMD_GET_TIME` command.
 
 The device should reply with `CMD_ACK_OK` code and a 4 byte integer with the device time, stored in little endian format.
 
-	packet(id=CMD_ACK_OK, data=<time>)
+	packet(id=CMD_ACK_OK, data=<enc_t>)
 
-Where `time` is calculated with the following formula:
+Where `enc_t` is calculated with the following formula:
 
 ```python
 enc_t = ((year%100)*12*31+((month-1)*31)+day-1)*(24*60*60)+(hour*60+minutes)*60+seconds
@@ -181,50 +181,56 @@ After that the machine should reply with `CMD_ACK_OK`, to make changes take effe
 
 This procedure can be summarized as follows:
 
-	> packet(id=CMD_SET_TIME, data=<time>)
+	> packet(id=CMD_SET_TIME, data=<enc_t>)
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_REFRESHDATA)
 		> packet(id=CMD_ACK_OK)
 
-
-
-
 ## Generic Requests ##
 
-The general procedure to request a list of parameters is:
+The general procedure to read/write a list of parameters, is:
 
 1. Disable the device with a `CMD_DISABLEDEVICE` command.
-2. Request a set of parameters.
+2. Read/write a set of parameters.
 3. Enable the device with a `CMD_ENABLEDEVICE` command.
 
-Some parameters of the device can be requested with a separate command but there is a set of parameters that can be requested with the one command, `CMD_OPTIONS_RRQ`,  and an specific argument, which would be the name of the requested parameter.
+### Generic Read of Parameters ###
+
+Some parameters of the device can be requested with a separate command but there is a set of parameters that can be requested with the one command, `CMD_OPTIONS_RRQ`,  and an specific argument, which would be the name of the parameter.
 
 	> packet(id=CMD_OPTIONS_RRQ, data="<param name>\x00")
 		> packet(id=CMD_ACK_OK, data="<param name>=<param value>\x00")
 
-|Function|Description|`<parameter  request>`||
-|---|---|---|
-|-|-|**Hex representation** |  **Ascii representation**|
-|Get platform|Returns ...|7e 50 6c 61 74 66 6f 72  6d 00|~Platform\x00|
-| | |7e 5a 4b 46 50 56 65 72 73 69 6f 6e 00|~ZKFPVersion\x00|
-| | |5a 4b 46 61 63 65 56 65  72 73 69 6f 6e 00|ZKFaceVersion\x00|
-| | |7e 4f 53 00|~OS\x00|
-| | |7e 45 78 74 65 6e 64 46  6d 74 00|~ExtendFmt\x00|
-| | |45 78 74 65 6e 64 4f 50  4c 6f 67 00|ExtendOPLog\x00|
-| | |57 6f 72 6b 43 6f 64 65  00|WorkCode\x00|
-| | |4c 61 6e 67 75 61 67 65  00|Language\x00|
-| | |42 69 6f 6d 65 74 72 69  63 54 79 70 65 00|BiometricType\x00|
-| | |46 69 6e 67 65 72 46 75  6e 4f 6e 00|FingerFunOn\x00|
-| | |7e 49 73 4f 6e 6c 79 52  46 4d 61 63 68 69 6e 65 00|~IsOnlyRFMachine\x00|
-| | |46 61 63 65 46 75 6e 4f  6e 00|FaceFunOn\x00|
-| | |7e 4f 45 4d 56 65 6e 64  6f 72 00|~OEMVendor\x00|
-| | |7e 44 65 76 69 63 65 4e  61 6d 65 00|~DeviceName\x00|
-| | |4d 41 43 00|MAC\x00|
-| | |7e 53 65 72 69 61 6c 4e  75 6d 62 65 72 00|~SerialNumber\x00|
-| | |7e 50 72 6f 64 75 63 74  54 69 6d 65 00|~ProductTime\x00|
-| | |7e 50 49 4e 32 57 69 64  74 68 00|~PIN2Width\x00|
-| | |7e 49 73 41 42 43 50 69  6e 45 6e 61 62 6c 65 00|~IsABCPinEnable\x00|
-| | |7e 54 39 46 75 6e 4f 6e  00|~T9FunOn\x00|
+**Notes**:
+
+- The param values are given in string format, that means that if a 1 is returned, it actually corresponds to `0x31`.
+- Booleans are represented with "1" and "0".
+- Integers are given as a string number in base 10.
+
+Here is a list of some parameters that can be requested using that format:
+
+|Parameter name		|Returns	|
+|---			|---		|
+|~Platform		|Plaform name	|
+|~ZKFPVersion		|Integer	|
+|ZKFaceVersion		|-		|
+|~OS			|-		|
+|~ExtendFmt		|-		|
+|ExtendOPLog		|-		|
+|WorkCode		|Bool		|
+|Language		|Integer	|
+|BiometricType		|-		|
+|FingerFunOn		|Bool		|
+|~IsOnlyRFMachine	|Bool		|
+|FaceFunOn		|Bool		|
+|~OEMVendor		|Vendor name	|
+|~DeviceName		|Device name	|
+|MAC			|MAC address	|
+|~SerialNumber		|Serial number	|
+|~ProductTime		|Date string	|
+|~PIN2Width		|Integer	|
+|~IsABCPinEnable	|Bool		|
+|~T9FunOn		|Bool		|
 
 ### Get Serial Number ###
 
@@ -278,81 +284,89 @@ Where the  `platform name` specifies the device platform.
 
 ### Get Device Info ###
 
-This procedure it is performed in the same way that the Generic Requests, that means that you should disable the device, get the parameters and then enable the device.
+This procedure it is performed in the same way that the Generic Read of Parameters:
 
+	> packet(id=CMD_OPTIONS_RRQ, data="<param name>\x00")
+		> packet(id=CMD_ACK_OK, data="<param name>=<param value>\x00")
 
-| SDK Number | Parameter name | Description | Permisions (RW/R) | Notes|
-|---|---|---|---|
-|1| NA | Maximum number of admins | NA | Fixed value it isn't requested to the machine. |
-|2| DeviceID| Device ID.|RW|Value ranges from 1 to 254|
-|3| NewLng |Language.|RW|For english it is 97|
-|4|IdleMinute|Idle time.|RW|Given in minutes|
-|5|LockOn|Lock control time.|RW|Given in seconds|
-|6|AlarmAttLog|Attendance record quantity alarm|RW| |
-|7|AlarmOpLog|Operation record quantity alarm|RW| |
-|8|AlarmReRec|Minimun time to record the same attendance state.|RW| |
-|9|RS232BaudRate|Baud rate for RS232/485|Valid values are 2400, 4800, 9600, 19200, 38400 57600, 115200. |
-|10|NA|Parity check bit| NA | Fixed value at 0. |
-|11|NA|Stop bit| NA | Fixed value at 0. |
-|12|NA|Date separator| NA| Fixed value at 1.|
-|13|NetworkOn|Enable flag for network functions| RW| |
-|14|RS232On|Enable flag for RS232 | RW | |
-|15|RS485On|Enable flag for RS485.| RW | |
-|16|VoiceOn|Enable announcements(voice).| RW | |
-|17|MSpeed|Perform high-speed comparison.|RW| |
-|18|IdlePower|Idle mode. | RW | 87 indicates shutdown and 88 indicates hibernation. |
-|19|AutoPowerOff|Automatic shutdown time.| RW| Value 255 indicates the machine to not shutdown automatically |
-|20|AutoPowerOn|Automatic startup time| RW | |
-|21|AutoPowerSuspend|Automatic hibernation time | RW |
-|22|AutoAlarm1|Alarm 1 time| RW | |
-|23|MThreshold|1:N comparison threshold. |RW | |
-|24|EThreshold|Registration threshold. | RW| |
-|25|VThreshold|1:1 comparison threshold. | RW | |
-|26|ShowScore|Display matching score during verification| |
-|27|UnlockPerson|Number of people that may unlock the door at the same time | | |
-|28|OnlyPINCard|Verify only the card number. | | |
-|29|HiSpeedNet|Network speed | | |
-|30|MustEnroll|Accept only for registered cards.
-|31|TOState|Timeout to return to the initial state |  | |
-|32|TOState|Timeout to return to the initial state if there are no inputs after entering PIN | |
-|33|TOMenu|Timeout to return to the initial state if there are no inputs after entering PIN | |
-|34|DtFmt|Time format | |
-|35|Must1To1|Flag for mandatory 1:1 comparison | | |
-|36|AutoAlarm2|Alarm 2 time. | |
-|37|AutoAlarm3|Alarm 3 time. | |
-|38|AutoAlarm4|Alarm 4 time. | |
-|39|AutoAlarm5|Alarm 5 time. | |
-|40|AutoAlarm6|Alarm 6 time. | |
-|41-56|AS{N}| Automatic status changing times| | -1 value indicates that the status will not change automatically.|
-|41 |AS1| |
-|42 |AS2 | |
-|...| | |
-|56 |AS16 | |
-|57	|WGFailed ID| Wiegand failure ID | | |
-|58|Wiegand duress ID| | |
-|59|Wiegand zone bit | | |
-|60|Pulse width of Wiegand outputs | | |
-|61|Pulse interval for Wiegand outputs | | |
-|62|ID of the start sector on the Mifare card where fingerprints are stored. | |
-|63|Total number of sectors on the Mifare card where fingerprints are stored.| |
-|64|Number of fingerprints stored on the Mifare card | | |
-|65| Forbidden | | |
-|66|Wheter to display the attendance status | |
-|67|Unused | | |
-|68|Unused | | |
-|69|TCP Port | | |
-|70|UDP Port | | |
-|71|Fingerprint algorithm version | | |
-|72|Face algorithm version | | |
-|73|Finger vein version | | |
-|74|FaceFunOn| | |
-|75|PIN2Width| | |
-|76|IsSupportABCPin| | |
-|77|IMEFunOn | | |
-|78|IsSupportAlarmExt| | |
-|79|~DCTZ| | |
-|80|~DOTZ| | |
-|81|
+**Notes**:
+
+- The param values are given in string format, that means that if a 1 is returned, it actually corresponds to `0x31`.
+- Booleans are represented with "1" and "0".
+- Integers are given as a string number in base 10.
+
+|SDK Number	|Parameter name		|Description	| Permisions (RW/R) | Notes|
+|---		|---			|---			|---|
+|1		|			|Maximum number of admins. | NA | Fixed value it isn't requested to the machine. |
+|2		|DeviceID		|Device ID.|RW|Value ranges from 1 to 254.|
+|3		|NewLng			|Language.|RW|For english it is 97.|
+|4		|IdleMinute		|The machine will enter standby state or power off, after this time elapses. |RW|Given in minutes.|
+|5		|LockOn			|Lock control time.|RW|Given in seconds.|
+|6		|AlarmAttLog		|Attendance record quantity alarm.|RW| |
+|7		|AlarmOpLog		|Operation record quantity alarm.|RW| |
+|8		|AlarmReRec		|Minimun time to record the same attendance state.|RW| |
+|9		|RS232BaudRate		|Baud rate for RS232/485. | RW |Valid values are 1200, 2400, 4800, 9600, 19200, 38400 57600, 115200. |
+|10		|NA			|Parity check bit.| NA | Fixed value at 0. |
+|11		|NA			|Stop bit.| NA | Fixed value at 0. |
+|12		|NA			|Date separator.| NA| Return value fixed at 1.|
+|13		|NetworkOn		|Enable flag for network functions| RW| |
+|14		|RS232On		|Enable flag for RS232. | RW | |
+|15		|RS485On		|Enable flag for RS485.| RW | |
+|16		|VoiceOn		|Enable announcements(voice).| RW | |
+|17		|MSpeed			|Perform high-speed comparison.|RW| Value codification is unknown.|
+|18		|IdlePower		|Idle mode. | RW | 87 indicates shutdown and 88 indicates hibernation. |
+|19		|AutoPowerOff		|Automatic shutdown time.| RW| Value 255 indicates the machine to not shutdown automatically. |
+|20		|AutoPowerOn		|Automatic startup time.| RW | Value 255 indicates the machine to not startup automatically. |
+|21		|AutoPowerSuspend	|Automatic hibernation time. | RW | Value 255 indicates the machine to not suspend automatically. |
+|22		|AutoAlarm1		|Alarm 1 time.| RW | Value 65535 disables the alarm(t). |
+|23		|MThreshold		|1:N comparison threshold. |RW | Integer.|
+|24		|EThreshold		|Registration threshold. | RW| Integer.|
+|25		|VThreshold		|1:1 comparison threshold. | RW |Integer.|
+|26		|ShowScore		|Display matching score during verification.|RW| Bool.|
+|27		|UnlockPerson		|Number of people that may unlock the door at the same time.| RW|Integer. |
+|28		|OnlyPINCard		|Verify only the card number. |RW |Bool.|
+|29		|HiSpeedNet		|Network speed |RW | Value correspondence: 1=100M-H, 4=10M-F, 5=100M-F, 8=Auto, others=10M-H.|
+|30		|MustEnroll		|Accept only registered cards.| RW | Bool.|
+|31		|TOState		|Timeout to return to the initial state. | RW |  Given in seconds.|
+|32		|TOState		|Timeout to return to the initial state if there are no inputs after entering PIN. |RW | Given in seconds.|
+|33		|TOMenu			|Timeout to return to the initial state if there are no inputs after entering menu. | RW | Given in seconds.|
+|34		|DtFmt			|Time format | |Value codification is unknown|
+|35		|Must1To1		|Flag for mandatory 1:1 comparison | RW|Bool. |
+|36		|AutoAlarm2		|Alarm 2 time. |RW| Value 65535 disables the alarm(t).|
+|37		|AutoAlarm3		|Alarm 3 time. |RW| Value 65535 disables the alarm(t).|
+|38		|AutoAlarm4		|Alarm 4 time. |RW| Value 65535 disables the alarm(t).|
+|39		|AutoAlarm5		|Alarm 5 time. |RW| Value 65535 disables the alarm(t).|
+|40		|AutoAlarm6		|Alarm 6 time. |RW| Value 65535 disables the alarm(t).|
+|41-56		|AS{N}			| Automatic status changing times| | -1 value indicates that the status will not change automatically.|
+|41		|AS1			| | | |
+|42		|AS2			| | | |
+|...		|AS{..}		| | | |
+|56		|AS16			| | | |
+|57		|WGFailed ID		| Wiegand failure ID. | | |
+|58		||Wiegand duress ID| | |
+|59		||Wiegand zone bit| | |
+|60		||Pulse width of Wiegand outputs | | |
+|61		||Pulse interval for Wiegand outputs | | |
+|62		||ID of the start sector on the Mifare card where fingerprints are stored. | | |
+|63		||Total number of sectors on the Mifare card where fingerprints are stored.| | |
+|64		||Number of fingerprints stored on the Mifare card | | |
+|65		||Forbidden | | |
+|66		||Wheter to display the attendance status | |
+|67		||Unused | | |
+|68		||Unused | | |
+|69		||TCP Port | | |
+|70		||UDP Port | | |
+|71		||Fingerprint algorithm version | | |
+|72		||Face algorithm version | | |
+|73		||Finger vein version | | |
+|74		||FaceFunOn| | |
+|75		||PIN2Width| | |
+|76		||IsSupportABCPin| | |
+|77		||IMEFunOn | | |
+|78		||IsSupportAlarmExt| | |
+|79		||~DCTZ| | |
+|80		||~DOTZ| | |
+|81		|| |||
 
 ### Set Device Info ###
 
@@ -389,13 +403,13 @@ The device should reply with a `CMD_ACK_OK` code and the current device state, s
 
 Where the state is 1-Byte wide and may have one of the following values:
 
-|Value|Description|
-|---|---|
-|0|Waiting state.|
-|1|Fingerprint registration state.|
-|2|Fingerprint identification state.|
-|3|Menu access state.|
-|4|Busy.|
-|5|Waiting for card writing.|
+|Value	|Description				|
+|---	|---					|
+|0	|Waiting state.				|
+|1	|Fingerprint registration state.	|
+|2	|Fingerprint identification state.	|
+|3	|Menu access state.			|
+|4	|Busy.					|
+|5	|Waiting for card writing.		|
 
 [Return](../protocol.md)
