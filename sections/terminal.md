@@ -296,7 +296,7 @@ This procedure it is performed in the same way that the Generic Read of Paramete
 - Integers are given as a string number in base 10.
 
 |SDK Number	|Parameter name		|Description	| Permisions (RW/R) | Notes|
-|---		|---			|---			|---|
+|---		|---			|---			|---|---|
 |1		|			|Maximum number of admins. | NA | Fixed value it isn't requested to the machine. |
 |2		|DeviceID		|Device ID.|RW|Value ranges from 1 to 254.|
 |3		|NewLng			|Language.|RW|For english it is 97.|
