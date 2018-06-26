@@ -36,9 +36,9 @@ The documentation provided by ZKTeco, sometimes shows acronyms without prior def
 
 The **standalone** terminals are called in that way because they may be used without any communication with a "coordinator" or "manager", like the ZKAccess software, so the protocol is designed to:
 
-- Get info from terminals: Attendance records, new users(added in the standalone terminal), device model, status, etc. The ZKAccess program, builds a database with this info.
-- Set info in terminals: Add users, change access permissions, change device settings, etc.
-- Report events: Corresponds to packets sent from the machine when specific actions take place, they are sent without a previous request.
+- **Get info from terminals**: Attendance records, new users(added in the standalone terminal), device model, status, etc. The ZKAccess program, builds a database with this info.
+- **Set info in terminals**: Add users, change access permissions, change device settings, etc.
+- **Report events**: Corresponds to packets sent from the machine when specific actions take place, they are sent without a previous request.
 
 Note that the communication can be done through:
 
@@ -52,7 +52,7 @@ The terminals are considered a **server**, so when attendance records are reques
 
 When there are "intensive" operations (i.e. too much changes/transactions) the procedures begin with a disable-device command, this could be to prevent undefined behavior in the device. For small tasks, like get-device-time, there is no need for disabling and enabling the device. Simple tasks usually consist of a request followed by a reply.
 
-Based on the SDK design, a classification of the protocol functions can be made:
+Based on the **Standalone SDK** design, a classification of the protocol functions can be made:
 
 - **Terminal operations**: Includes, procedures to manage communication with the machine, get/set time of device and to request generic information(device type, matching algorithm, etc).
 - **Data operations**: Procedures to manage data in the device, they can be further divided according to the data to be modified.
@@ -86,24 +86,22 @@ All packets have the following fields:
 (<): Little endian format.
 
 The packets can be divided in regular packets and in realtime packets:
-- Regular packets: These are the packets used for normal request and reply procedures.
-- Realtime packets: These are the packets used to report events, the are sent by the machine without a previous connection, if a connection exists.
-
+- **Regular packets**: These are the packets used for normal request and reply procedures.
+- **Realtime packets**: These are the packets used to report events, the are sent by the machine without a previous connection, if a connection exists.
 
 ### Regular Packet Payload ###
 
 For regular packets the payload can be decomposed in the following fields:
 
-|Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
-|---		|---						|---		|---		|---	|
-|command id	|Command identifier/Reply code.			|varies(<)	|2		|0	|
-|checksum	|Checksum.					|varies(<)	|2		|2	|
-|session id	|Session id.					|varies(<)	|2		|4	|
-|reply number	|Reply number.					|varies(<)	|2		|6	|
-|data		|Specific data for the given command/reply.	|varies		|payload_size-8	|8	|
+|Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|Overall Offset	|
+|---		|---						|---		|---		|---	|---		|
+|command id	|Command identifier/Reply code.			|varies(<)	|2		|0	|8		|
+|checksum	|Checksum.					|varies(<)	|2		|2	|10		|
+|session id	|Session id.					|varies(<)	|2		|4	|12		|
+|reply number	|Reply number.					|varies(<)	|2		|6	|14		|
+|data		|Specific data for the given command/reply.	|varies		|payload_size-8	|8	|16		|
 
 (<): Little endian format.
-
 
 #### Command/Reply Identifiers ####
 
@@ -111,77 +109,78 @@ The command/reply id field may be used for two purposes:
 
 1. Instruct the machine to do something.
 2. Return an exit code from a given procedure.
+3. Report events (corresponds to `CMD_REG_EVENT`).
 
 The command id correspondence is given in the following table:
 
-|Name			|Description				|Value[base10]	|Value[hex]	|
-|---			|---					|---		|---		|
-|CMD_CONNECT		|Begin connection.			|1000		|03e8		|
-|CMD_EXIT		|Disconnect.				|1001		|03e9		|
-|CMD_ENABLEDEVICE	|Change machine state to "normal work".	|1002		|03ea		|
-|CMD_DISABLEDEVICE	|Change machine state to "busy".	|1003		|03eb		|
-|CMD_RESTART		|Restart machine.			|1004		|03ec		|
-|CMD_POWEROFF		|Shut-down machine.			|1005		|03ed		|
-|CMD_SLEEP		|Change machine state to "idle".	|1006		|03ee		|
-|CMD_RESUME		|Change machine state to "awaken".	|1007		|03ef		|
-|CMD_CAPTUREFINGER	|Capture fingerprint picture.		|1009		|03f1		|
-|CMD_TEST_TEMP		|Test if fingerprint exists.		|1011		|03f3		|
-|CMD_CAPTUREIMAGE	|Capture the entire image.		|1012		|03f4		|
-|CMD_REFRESHDATA	|Refresh the machine interior data.	|1013		|03f5		|
-|CMD_REFRESHOPTION	|Refresh the configuration parameter.	|1014		|03f6		|
-|CMD_TESTVOICE		|Play voice.				|1017		|03f9		|
-|CMD_GET_VERSION	|Obtain the firmware edition.		|1100		|044c		|
-|CMD_CHANGE_SPEED	|Change transmission speed.		|1101		|044d		|
-|CMD_AUTH		| |1102		|044e		|
-|CMD_PREPARE_DATA	| |1500		|05dc		|
-|CMD_DATA		| |1501		|05dd		|
-|CMD_FREE_DATA		| |1502		|05de		|
-|CMD_DB_RRQ		| |7		|0007		|
-|CMD_USER_WRQ		| |8		|0008		|
-|CMD_USERTEMP_RRQ	| |9		|0009		|
-|CMD_USERTEMP_WRQ	| |10		|000a		|
-|CMD_OPTIONS_RRQ	| |11		|000b		|
-|CMD_OPTIONS_WRQ	| |12		|000c		|
-|CMD_ATTLOG_RRQ		| |13		|000d		|
-|CMD_CLEAR_DATA		| |14		|000e		|
-|CMD_CLEAR_ATTLOG	| |15		|000f		|
-|CMD_DELETE_USER	| |18		|0012		|
-|CMD_DELETE_USERTEMP	| |19		|0013		|
-|CMD_CLEAR_ADMIN	| |20		|0014		|
-|CMD_USERGRP_RRQ	| |21		|0015		|
-|CMD_USERGRP_WRQ	| |22		|0016		|
-|CMD_USERTZ_RRQ		| |23		|0017		|
-|CMD_USERTZ_WRQ		| |24		|0018		|
-|CMD_GRPTZ_RRQ		| |25		|0019		|
-|CMD_GRPTZ_WRQ		| |26		|001a		|
-|CMD_TZ_RRQ		| |27		|001b		|
-|CMD_TZ_WRQ		| |28		|001c		|
-|CMD_ULG_RRQ		| |29		|001d		|
-|CMD_ULG_WRQ		| |30		|001e		|
-|CMD_UNLOCK		| |31		|001f		|
-|CMD_CLEAR_ACC		| |32		|0020		|
-|CMD_CLEAR_OPLOG	| |33		|0021		|
-|CMD_OPLOG_RRQ		| |34		|0022		|
-|CMD_GET_FREE_SIZES	| |50		|0032		|
-|CMD_ENABLE_CLOCK	| |57		|0039		|
-|CMD_STARTVERIFY	| |60		|003c		|
-|CMD_STARTENROLL	| |61		|003d		|
-|CMD_CANCELCAPTURE	| |62		|003e		|
-|CMD_STATE_RRQ		| |64		|0040		|
-|CMD_WRITE_LCD		| |66		|0042		|
-|CMD_CLEAR_LCD		| |67		|0043		|
-|CMD_GET_PINWIDTH	| |69		|0045		|
-|CMD_SMS_WRQ		| |70		|0046		|
-|CMD_SMS_RRQ		| |71		|0047		|
-|CMD_DELETE_SMS		| |72		|0048		|
-|CMD_UDATA_WRQ		| |73		|0049		|
-|CMD_DELETE_UDATA	| |74		|004a		|
-|CMD_DOORSTATE_RRQ	| |75		|004b		|
-|CMD_WRITE_MIFARE	| |76		|004c		|
-|CMD_EMPTY_MIFARE	| |78		|004e		|
-|CMD_GET_TIME		| |201		|00c9		|
-|CMD_SET_TIME		| |202		|00ca		|
-|CMD_REG_EVENT		| |500		|01f4		|
+|Name			|Description						|Value[base10]	|Value[hex]	|
+|---			|---							|---		|---		|
+|CMD_CONNECT		|Begin connection.					|1000		|03e8		|
+|CMD_EXIT		|Disconnect.						|1001		|03e9		|
+|CMD_ENABLEDEVICE	|Change machine state to "normal work".			|1002		|03ea		|
+|CMD_DISABLEDEVICE	|Disables fingerprint, rfid reader and keyboard.	|1003		|03eb		|
+|CMD_RESTART		|Restart machine.					|1004		|03ec		|
+|CMD_POWEROFF		|Shut-down machine.					|1005		|03ed		|
+|CMD_SLEEP		|Change machine state to "idle".			|1006		|03ee		|
+|CMD_RESUME		|Change machine state to "awaken".			|1007		|03ef		|
+|CMD_CAPTUREFINGER	|Capture fingerprint picture.				|1009		|03f1		|
+|CMD_TEST_TEMP		|Test if fingerprint exists.				|1011		|03f3		|
+|CMD_CAPTUREIMAGE	|Capture the entire image.				|1012		|03f4		|
+|CMD_REFRESHDATA	|Refresh the machine stored data.			|1013		|03f5		|
+|CMD_REFRESHOPTION	|Refresh the configuration parameters.			|1014		|03f6		|
+|CMD_TESTVOICE		|Test voice.						|1017		|03f9		|
+|CMD_GET_VERSION	|Request the firmware edition.				|1100		|044c		|
+|CMD_CHANGE_SPEED	|Change transmission speed.				|1101		|044d		|
+|CMD_AUTH		|Request to begin session using commkey.		|1102		|044e		|
+|CMD_PREPARE_DATA	|Prepare for data transmission.				|1500		|05dc		|
+|CMD_DATA		|Data packet.						|1501		|05dd		|
+|CMD_FREE_DATA		|Release buffer used for data transmission.		|1502		|05de		|
+|CMD_DB_RRQ		|Read saved data.					|7		|0007		|
+|CMD_USER_WRQ		|Upload user data.					|8		|0008		|
+|CMD_USERTEMP_RRQ	|Read user fingerprint template.			|9		|0009		|
+|CMD_USERTEMP_WRQ	|Upload user fingerprint template.			|10		|000a		|
+|CMD_OPTIONS_RRQ	|Read configuration value of the machine.		|11		|000b		|
+|CMD_OPTIONS_WRQ	|Change configuration value of the machine.		|12		|000c		|
+|CMD_ATTLOG_RRQ		|Request attendance log.				|13		|000d		|
+|CMD_CLEAR_DATA		|Delete data.						|14		|000e		|
+|CMD_CLEAR_ATTLOG	|Delete attendance record.				|15		|000f		|
+|CMD_DELETE_USER	|Delete user.						|18		|0012		|
+|CMD_DELETE_USERTEMP	|Delete user fingerprint template.			|19		|0013		|
+|CMD_CLEAR_ADMIN	|Delete the manager.					|20		|0014		|
+|CMD_USERGRP_RRQ	|Read user group.					|21		|0015		|
+|CMD_USERGRP_WRQ	|Set user group.					|22		|0016		|
+|CMD_USERTZ_RRQ		|Get user timezones.					|23		|0017		|
+|CMD_USERTZ_WRQ		|Set the user timezones.				|24		|0018		|
+|CMD_GRPTZ_RRQ		|Get group timezone.					|25		|0019		|
+|CMD_GRPTZ_WRQ		|Set group timezone.					|26		|001a		|
+|CMD_TZ_RRQ		|Get device timezones.					|27		|001b		|
+|CMD_TZ_WRQ		|Set device timezones.					|28		|001c		|
+|CMD_ULG_RRQ		|Get group combination to unlock.			|29		|001d		|
+|CMD_ULG_WRQ		|Set group combination to unlock.			|30		|001e		|
+|CMD_UNLOCK		|Unlock door for a specified amount of time.		|31		|001f		|
+|CMD_CLEAR_ACC		|Restore access control to default.			|32		|0020		|
+|CMD_CLEAR_OPLOG	|Delete operations log.					|33		|0021		|
+|CMD_OPLOG_RRQ		|Read operations log.					|34		|0022		|
+|CMD_GET_FREE_SIZES	|Request machine status (remaining space).		|50		|0032		|
+|CMD_ENABLE_CLOCK	|Set the machine to normal state.			|57		|0039		|
+|CMD_STARTVERIFY	|Set the machine to authentication state.		|60		|003c		|
+|CMD_STARTENROLL	|Start enroll procedure.				|61		|003d		|
+|CMD_CANCELCAPTURE	|Disable normal authentication of users.		|62		|003e		|
+|CMD_STATE_RRQ		|Query state.						|64		|0040		|
+|CMD_WRITE_LCD		|Prints chars to the device screen.			|66		|0042		|
+|CMD_CLEAR_LCD		|Clear screen captions.					|67		|0043		|
+|CMD_GET_PINWIDTH	|Request max size for users id.				|69		|0045		|
+|CMD_SMS_WRQ		|Upload short message.					|70		|0046		|
+|CMD_SMS_RRQ		|Download short message.				|71		|0047		|
+|CMD_DELETE_SMS		|Delete short message.					|72		|0048		|
+|CMD_UDATA_WRQ		|Set user short message.				|73		|0049		|
+|CMD_DELETE_UDATA	|Delete user short message.				|74		|004a		|
+|CMD_DOORSTATE_RRQ	|Get door state.					|75		|004b		|
+|CMD_WRITE_MIFARE	|Write data to Mifare card.				|76		|004c		|
+|CMD_EMPTY_MIFARE	|Clear Mifare card.					|78		|004e		|
+|CMD_GET_TIME		|Request machine time.					|201		|00c9		|
+|CMD_SET_TIME		|Set machine time.					|202		|00ca		|
+|CMD_REG_EVENT		|Realtime events.					|500		|01f4		|
 
 See the codification of reply codes in the following table:
 
@@ -192,12 +191,11 @@ See the codification of reply codes in the following table:
 |CMD_ACK_DATA		|							|2002		|07d2		|
 |CMD_ACK_RETRY		|							|2003		|07d3		|
 |CMD_ACK_REPEAT		|							|2004		|07d4		|
-|CMD_ACK_UNAUTH		|							|2005		|07d5		|
-|CMD_ACK_UNKNOWN	|							|65535		|ffff		|
+|CMD_ACK_UNAUTH		|Connection not authorized.				|2005		|07d5		|
+|CMD_ACK_UNKNOWN	|Received unknown command.				|65535		|ffff		|
 |CMD_ACK_ERROR_CMD	|							|65533		|fffd		|
 |CMD_ACK_ERROR_INIT	|							|65532		|fffc		|
 |CMD_ACK_ERROR_DATA	|							|65531		|fffb		|
-
 
 #### Checksum ####
 
@@ -259,31 +257,32 @@ d007296af38d0a0009
 
 The checksum should give you `6a29`.
 
-
 #### Session ID ####
 
 The session identifier it is a unique number assigned for every new connection, the machine returns the assigned session id after a connection request.
 
+The session id seems to be just a seconds counter, but the easiest way to get this number is just to extract the number from the device's connect reply.
+
+Also it is worth to note that performing a connection after another connection doesn't change the session id, that means that the session is closed only after closing the connection.
 
 #### Reply Number ####
 
-After a successful connection the counter starts from zero counting the number of replies, a command sent to the machine carries this reply counter and this number is the same for a valid reply from the machine. After receiving a reply from the machine, the counter becomes incremented and this new value is sent in the next request.
+After a successful socket connection the counter starts from zero counting the number of replies, a command sent to the machine carries this reply counter and this number is the same for a valid reply from the machine. After receiving a reply from the machine, the counter becomes incremented and this new value is sent in the next request.
 
 The reply number should evolve like this:
 
-	> 0000
-		> 0000
-	> 0001
-		> 0001
-	> 0002
-		> 0002
+	> command sent with reply number: 0000
+		> reply received with reply numer: 0000
+	> command sent with reply number: 0001
+		> reply received with reply numer: 0001
+	> command sent with reply number: 0002
+		> reply received with reply numer: 0002
 
 #### Data ####
 
 The contents of this field depend on the procedure. See Specific Operations sections.
 
-
-### Realtime Packet Payload###
+### Realtime Packet Payload ###
 
 For realtime packets the payload differs a little from a regular packet:
 
@@ -291,13 +290,13 @@ For realtime packets the payload differs a little from a regular packet:
 - The session id field is used to store the event code.
 - The reply number is set to zero.
 
-|Name		|Description				|Value[hex]	|Size[bytes]	|Offset	|
-|---		|---					|---		|---		|---	|
-|command id	|Command identifier/Reply code.		|0xf401(t)	|2		|0	|
-|checksum	|Checksum.				|varies(<)	|2		|2	|
-|event		|Event code identifier.			|varies(<)	|2		|4	|
-|reply number	|Reply number.				|0x0000		|2		|6	|
-|data		|Specific data for the given report.	|varies		|payload_size-8	|8	|
+|Name		|Description				|Value[hex]	|Size[bytes]	|Offset	|Overall Offset	|
+|---		|---					|---		|---		|---	|---		|
+|command id	|Command identifier/Reply code.		|0xf401(t)	|2		|0	|8		|
+|checksum	|Checksum.				|varies(<)	|2		|2	|10		|
+|event		|Event code identifier.			|varies(<)	|2		|4	|12		|
+|reply number	|Reply number.				|0x0000		|2		|6	|14		|
+|data		|Specific data for the given report.	|varies		|payload_size-8	|8	|16		|
 
 (<): Little endian format.
 (t): This id corresponds to the command `CMD_REG_EVENT`(0x1f4).
@@ -306,17 +305,17 @@ For realtime packets the payload differs a little from a regular packet:
 
 The following table shows the codification for realtime events:
 
-|Name			|Description		|Value[base10]	|Value[hex]	|
-|---			|---			|---		|---		|
-|EF_ATTLOG		|			|1		|1		|
-|EF_FINGER		|			|2		|2		|
-|EF_ENROLLUSER		|			|4		|4		|
-|EF_ENROLLFINGER	|			|8		|8		|
-|EF_BUTTON		|			|16		|10		|
-|EF_UNLOCK		|			|32		|20		|
-|EF_VERIFY		|			|128		|80		|
-|EF_FPFTR		|			|256		|100		|
-|EF_ALARM		|			|512		|200		|
+|Name			|Description				|Value[base10]	|Value[hex]	|
+|---			|---					|---		|---		|
+|EF_ATTLOG		|Attendance entry.			|1		|1		|
+|EF_FINGER		|Pressed finger.			|2		|2		|
+|EF_ENROLLUSER		|Enrolled user.				|4		|4		|
+|EF_ENROLLFINGER	|Enrolled fingerprint.			|8		|8		|
+|EF_BUTTON		|Pressed keyboard key.			|16		|10		|
+|EF_UNLOCK		|					|32		|20		|
+|EF_VERIFY		|Registered user placed finger.		|128		|80		|
+|EF_FPFTR		|Fingerprint score in enroll procedure.	|256		|100		|
+|EF_ALARM		|Triggered alarm.			|512		|200		|
 
 
 ## Specific Operations ##
@@ -331,7 +330,7 @@ The packet formation process was presented in previous sections, the notation:
 
 	packet(id=<command/reply code>, data=<payload data>)
 
-Is a compact format to refer to a packet with the format:
+Is a compact form to refer to a packet with the format:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---						|---		|---		|---	|
@@ -392,6 +391,7 @@ See [realtime.md](./sections/realtime.md)
 ### Misc Operations ###
 
 See [misc.md](./sections/misc.md)
+
 
 ## Links and Sources ##
 
