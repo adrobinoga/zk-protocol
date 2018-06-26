@@ -363,7 +363,7 @@ This table is based on the SDK definitions.
 
 (t) : To obtain time, convert the string number to bin, then take the 8 most significant bits, the given number will be the hour, the minutes are simply the number given by the 8 least significant bits.
 
-? : Stands for unknown
+? : Stands for unknown.
 
 NA : Stands for Not Applicable.
 
