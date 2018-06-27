@@ -11,11 +11,11 @@ Then begin with the main page:
 
 Protocol related operations are grouped in the following sections:
 
-- [ex_data.md](section/ex_data.md): Protocol for the exchange of large amounts of data.
+- [ex_data.md](sections/ex_data.md): Protocol for the exchange of large amounts of data.
 - [terminal.md](sections/terminal.md): Protocol for procedures to get/set device parameters.
 - [data.md](sections/data.md): Protocol to manage the users data.
 - [access.md](sections/access.md): Protocol to manage the access settings.
-- [other.md](section/other.md): Other procedures.
+- [other.md](sections/other.md): Other procedures.
 
 ## Develop ##
 
