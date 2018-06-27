@@ -3,7 +3,7 @@ A precise, clean and easy to understand description of the protocol used in ZKTe
 
 ## Getting Started ##
 
-This project is part of an effort to build an alternative for ZKTeco's Standalone devices, you should begin by reading the user manual and the Standalone SDK docs.
+This project is part of an effort to build an alternative for ZKTeco's Standalone devices, you should begin by reading the user manual and the Standalone SDK docs, that can be found in ZKTeco's SDKs Download page.
 
 Then begin with the main page:
 
@@ -11,10 +11,11 @@ Then begin with the main page:
 
 Protocol related operations are grouped in the following sections:
 
-- [terminal.md](sections/terminal.md)
-- [data.md](sections/data.md)
-- [access.md](sections/access.md)
-- [other.md](section/other.md)
+- [ex_data.md](section/ex_data.md): Protocol for the exchange of large amounts of data.
+- [terminal.md](sections/terminal.md): Protocol for procedures to get/set device parameters.
+- [data.md](sections/data.md): Protocol to manage the users data.
+- [access.md](sections/access.md): Protocol to manage the access settings.
+- [other.md](section/other.md): Other procedures.
 
 ## Develop ##
 
