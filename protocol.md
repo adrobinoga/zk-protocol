@@ -405,9 +405,9 @@ For operations to manage access settings, see [access.md](./sections/access.md)
 
 Realtime events are explained in [realtime.md](./sections/realtime.md)
 
-### Misc Operations ###
+### Other Operations ###
 
-Other operations can be found in [misc.md](./sections/misc.md)
+Other operations can be found in [other.md](./sections/other.md)
 
 
 ## Links and Sources ##
