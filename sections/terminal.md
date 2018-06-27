@@ -1,6 +1,6 @@
 # Terminal Operations #
 
-[Return](../protocol.md)
+[Go to Main Page](../protocol.md)
 
 Author: Alexander Marin <alexanderm2230@gmail.com>
 
@@ -413,4 +413,4 @@ Where the state is 1-Byte wide and may have one of the following values:
 |4	|Busy.					|
 |5	|Waiting for card writing.		|
 
-[Return](../protocol.md)
+[Go to Main Page](../protocol.md)

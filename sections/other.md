@@ -1,6 +1,6 @@
 # Other Operations #
 
-[Return](../protocol.md)
+[Go to Main Page](../protocol.md)
 
 Author: Alexander Marin <alexanderm2230@gmail.com>
 
@@ -126,4 +126,4 @@ Then send the `CMD_STARTVERIFY` command to prompt the user to place the fingerpr
 At this point expect realtime packets from the machine
 
 
-[Return](../protocol.md)
+[Go to Main Page](../protocol.md)

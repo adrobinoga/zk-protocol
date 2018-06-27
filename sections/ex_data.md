@@ -1,8 +1,9 @@
 # Exchange of Data #
 
-[Return](../protocol.md)
+[Go to Main Page](../protocol.md)
 
 Author: Alexander Marin <alexanderm2230@gmail.com>
 
 [TOC]
 
+[Go to Main Page](../protocol.md)
