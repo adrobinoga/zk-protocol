@@ -162,7 +162,7 @@ The command id correspondence is given in the following table:
 |CMD_CLEAR_OPLOG	|Delete operations log.					|33		|0021		|
 |CMD_OPLOG_RRQ		|Read operations log.					|34		|0022		|
 |CMD_GET_FREE_SIZES	|Request machine status (remaining space).		|50		|0032		|
-|CMD_ENABLE_CLOCK	|Set the machine to normal state.			|57		|0039		|
+|CMD_ENABLE_CLOCK	|Enables the ":" in screen clock.			|57		|0039		|
 |CMD_STARTVERIFY	|Set the machine to authentication state.		|60		|003c		|
 |CMD_STARTENROLL	|Start enroll procedure.				|61		|003d		|
 |CMD_CANCELCAPTURE	|Disable normal authentication of users.		|62		|003e		|
@@ -278,6 +278,8 @@ The reply number should evolve like this:
 	> command sent with reply number: 0002
 		> reply received with reply numer: 0002
 
+**Note**: For large amounts of data this differs a little, see "Exchange of Data".
+
 #### Data ####
 
 The contents of this field depend on the procedure. See Specific Operations sections.
@@ -347,11 +349,22 @@ Is a compact form to refer to a packet with the format:
 
 Where the others fields, the `payload size`, `checksum`, `session id` and `reply number` are calculated from context and the given packet parameters.
 
-When data parameter is absent, an empty `payload data` field should be assumed.
+Sometimes the other parameters are filled with other values, not given from context, to indicate this we use the notation:
 
-Also, in this notation the id code is given in big endian (as seen on the table of command codes), and the data could be given as a textual description or as a sequence of hex numbers.
+	packet(id=<command/reply code>, data=<payload data>, <field>=<value>)
 
-Some type of commands have a data field that it is always terminated in `0x00`, this is a way to indicate the end of a string, in this documentation this value is always shown to prevent ambiguity, it may be shown as `00` if it is a sequence of hex numbers or it may be shown as `\x00`, if a string is used.
+Example:
+
+	packet(id=CMD_ACK_OK, session id=0000)
+
+**Notes**:
+
+- When data parameter is absent, an empty `payload data` field should be assumed.
+
+- Also, in this notation the hex codes are given in big endian (as seen on the table of command codes), and the data could be given as a textual description or as a sequence of hex numbers.
+
+- Some type of commands have a data field that it is always terminated in `0x00`, this is a way to indicate the end of a string, in this documentation this value is always shown to prevent ambiguity, it may be shown as `00` if it is a sequence of hex numbers or it may be shown as `\x00`, if a string is used.
+
 
 #### Realtime Packet Creation ####
 
@@ -372,25 +385,29 @@ For packet conversations the following notation is used:
 	> "message from client to machine"
 		> "message from machine to client"
 
+### Exchange of Data ###
+
+For specific steps used to send/receive large amounts of data, see [ex_data.md](./sections/ex_data.md)
+
 ### Terminal Operations ###
 
-See [terminal.md](./sections/terminal.md)
+For operations related to read/write of machine parameters, see [terminal.md](./sections/terminal.md)
 
 ### Data Operations ###
 
-See [data.md](./sections/data.md)
+For operations to manage users data, see [data.md](./sections/data.md)
 
 ### Access Operations ###
 
-See [access.md](./sections/access.md)
+For operations to manage access settings, see [access.md](./sections/access.md)
 
 ### Realtime Operations ###
 
-See [realtime.md](./sections/realtime.md)
+Realtime events are explained in [realtime.md](./sections/realtime.md)
 
 ### Misc Operations ###
 
-See [misc.md](./sections/misc.md)
+Other operations can be found in [misc.md](./sections/misc.md)
 
 
 ## Links and Sources ##
