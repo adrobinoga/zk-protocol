@@ -13,13 +13,13 @@ When sending/receiving, small sets of data (approx. less than 1KB) to/from the m
 	> packet(id=CMD_DISABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_DATA_WRRQ, data=<data id>)
-		> packet(id=CMD_DATA, data=<info>)
+		> packet(id=CMD_DATA, data=<dataset>)
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
 **Notes**:
 
-- The `info` and `data id` fields are specific to each procedure and are described in the corresponding sections.
+- The `dataset` and `data id` fields are specific to each procedure and are described in the corresponding sections.
 - Writing of small datasets is performed with specific commands described in the corresponding sections.
 
 For larger sets of data (approx. more than 1KB) a set of additional commands should be used.
@@ -35,14 +35,14 @@ Then a request of data can be done with the command `CMD_DATA_WRRQ`, if the data
 	> packet(id=CMD_DATA_WRRQ, data=<data id>)
 		> packet(id=CMD_ACK_OK, data=<data stat>)
 
-The `data stat` structure contains info of the data to be sent to the client:
+The `data stat` structure contains the size of the data to be sent to the client:
 
-|Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
-|---		|---						|---		|---		|---	|
-|		|Fixed.						|00		|1		|0	|
-|size info (*)	|Size of the info to be sent from the device.	|varies (<)	|4		|1	|
-|size info (*)	|""						|varies (<)	|4		|5	|
-|unknown	|Unknown value, seems to be a kind of checksum.	|varies		|4		|9	|
+|Name			|Description					|Value[hex]	|Size[bytes]	|Offset	|
+|---			|---						|---		|---		|---	|
+|			|Fixed.						|00		|1		|0	|
+|size dataset (*)	|Size of the dataset to be sent from the device.|varies (<)	|4		|1	|
+|size dataset (*)	|""						|varies (<)	|4		|5	|
+|unknown		|Unknown value, seems to be a kind of checksum.	|varies		|4		|9	|
 
 (<): Little endian format.
 (*): These values show the same value, but for larger datasets we dont know if that would be the case, since it doesn't make sense to have the value duplicated.
@@ -52,20 +52,20 @@ After that, send a `CMD_DATA_RDY` command to indicate the device to trasmit the 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---						|---		|---		|---	|
 |		|Fixed.						|0000		|4		|0	|
-|size info	|Size of the info to be sent from the device.	|varies (<)	|4		|4	|
+|size dataset	|Size of the dataset to be sent from the device.|varies (<)	|4		|4	|
 
 (<): Little endian format.
 
-After that the device would send a packet with the command `CMD_PREPARE_DATA` and a structure,`prep struct`, which has the following fields:
+After that the device would send a packet with the command `CMD_PREPARE_DATA` and a structure, `prep struct`, which has the following fields:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---						|---		|---		|---	|
-|size info	|Size of the info to be sent from the device.	|varies (<)	|4		|0	|
+|size dataset	|Size of the dataset to be sent from the device.|varies (<)	|4		|0	|
 |		|Fixed.						|0010		|4		|4	|
 
 (<): Little endian format.
 
-Just after that, without a reply from the client, the machine sends the data with a `CMD_DATA` command, the data field of this packet carries the requested info. Keep in mind that the length of the data field of this packet equals to `size info`. After sending the info and without waiting for a client reply, the device sends an acknowledge command, without any data.
+Just after that, without a reply from the client, the machine sends the data with a `CMD_DATA` command, the data field of this packet carries the requested info. Keep in mind that the length of the data field of this packet equals to `size dataset`. After sending the dataset and without waiting for a client reply, the device sends an acknowledge command, without any data.
 
 It is worth to note that the reply number for this sequence of commands(`CMD_PREPARE_DATA`, `CMD_DATA`, `CMD_ACK_OK`) is the same.
 
@@ -73,7 +73,7 @@ The procedure ends with a command to free the buffer of the machine, using `CMD_
 
 	> packet(id=CMD_DATA_RDY, data=<rdy struct>, reply number=<rN>)
 		> packet(id=CMD_PREPARE_DATA, data=<prep struct>, reply number=<rN>)
-		> packet(id=CMD_DATA, data=<info>, reply number=<rN>)
+		> packet(id=CMD_DATA, data=<dataset>, reply number=<rN>)
 		> packet(id=CMD_ACK_OK, reply number=<rN>)
 	> packet(id=CMD_FREE_DATA, reply number=<rN+1>)
 		> packet(id=CMD_ACK_OK, reply number=<rN+1>)
