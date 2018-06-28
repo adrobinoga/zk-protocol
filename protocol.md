@@ -135,6 +135,8 @@ The command id correspondence is given in the following table:
 |CMD_PREPARE_DATA	|Prepare for data transmission.				|1500		|05dc		|
 |CMD_DATA		|Data packet.						|1501		|05dd		|
 |CMD_FREE_DATA		|Release buffer used for data transmission.		|1502		|05de		|
+|CMD_DATA_WRRQ		|Read/Write a large data set.				|1503		|05df		|
+|CMD_DATA_RDY		|Indicates that it is ready to receive data.		|1504		|05e0		|
 |CMD_DB_RRQ		|Read saved data.					|7		|0007		|
 |CMD_USER_WRQ		|Upload user data.					|8		|0008		|
 |CMD_USERTEMP_RRQ	|Read user fingerprint template.			|9		|0009		|
@@ -349,7 +351,7 @@ Is a compact form to refer to a packet with the format:
 
 Where the others fields, the `payload size`, `checksum`, `session id` and `reply number` are calculated from context and the given packet parameters.
 
-Sometimes the other parameters are filled with other values, not given from context, to indicate this we use the notation:
+Sometimes is helpful to explicitly show the values of the other packet fields, to indicate this we use the notation:
 
 	packet(id=<command/reply code>, data=<payload data>, <field>=<value>)
 
