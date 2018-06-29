@@ -1,4 +1,4 @@
-# Terminal Operations #
+# Realtime Operations #
 
 [Go to Main Page](../protocol.md)
 
