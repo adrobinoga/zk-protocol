@@ -147,8 +147,8 @@ The returned structure has the following fields:
 |Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---					|---		|---		|---		|
 |user sn	|User's serial number.			|varies (<)	|4		|0		|
-|		|Fixed.					|01		|3		|4		|
+|		|Fixed.					|01		|1		|4		|
 
-If the user can't be identified, then the user sn equals to 0xffffffff
+If the user can't be identified, then the user sn equals to `ffffffff`
 
 [Go to Main Page](../protocol.md)
