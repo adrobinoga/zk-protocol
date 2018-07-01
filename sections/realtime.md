@@ -109,7 +109,11 @@ can be obtained by extracting each byte as a number, and entering them in the fo
 
 ## Enrolled Finger ##
 
-After a fingerprint enrolling process the machine returns a structure indicating how the procedure went, it returns a structure with the following fields:
+After a fingerprint enrolling process the machine returns a structure indicating how the procedure went:
+
+	rtpacket(event=EF_ENROLLFINGER, data=<enroll result>)
+
+The `enroll result` structure has the following fields:
 
 |Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---					|---		|---		|---		|
