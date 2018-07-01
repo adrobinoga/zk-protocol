@@ -148,7 +148,7 @@ The command id correspondence is given in the following table:
 |CMD_CLEAR_ATTLOG	|Delete attendance record.				|15		|000f		|
 |CMD_DELETE_USER	|Delete user.						|18		|0012		|
 |CMD_DELETE_USERTEMP	|Delete user fingerprint template.			|19		|0013		|
-|CMD_CLEAR_ADMIN	|Delete the manager.					|20		|0014		|
+|CMD_CLEAR_ADMIN	|Clears admins privileges.				|20		|0014		|
 |CMD_USERGRP_RRQ	|Read user group.					|21		|0015		|
 |CMD_USERGRP_WRQ	|Set user group.					|22		|0016		|
 |CMD_USERTZ_RRQ		|Get user timezones.					|23		|0017		|
@@ -180,6 +180,7 @@ The command id correspondence is given in the following table:
 |CMD_DOORSTATE_RRQ	|Get door state.					|75		|004b		|
 |CMD_WRITE_MIFARE	|Write data to Mifare card.				|76		|004c		|
 |CMD_EMPTY_MIFARE	|Clear Mifare card.					|78		|004e		|
+|CMD_DEL_FPTMP		|Deletes fingerprint template.				|134		|0086		|
 |CMD_GET_TIME		|Request machine time.					|201		|00c9		|
 |CMD_SET_TIME		|Set machine time.					|202		|00ca		|
 |CMD_REG_EVENT		|Realtime events.					|500		|01f4		|
