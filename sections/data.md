@@ -33,14 +33,14 @@ Here is a list of SDK functions, from **Data-User.h** and **Data-Record** files,
 |GetEnrollData		|**O**			|Applicable only to BW.					|
 |SetEnrollData		|**O**			|Applicable only to BW.					|
 |DeleteEnrollData	|**O**			|Applicable only to BW.					|
-|SSR_DeleteEnrollData	|**O**			|					|
-|SSR_DeleteEnrollDataExt|**O**			|					|
+|SSR_DeleteEnrollData	|**X**			|					|
+|SSR_DeleteEnrollDataExt|**X**			|					|
 |GetEnrollDataStr	|**O**			|Applicable only to BW.					|
 |SetEnrollDataStr	|**O**			|Applicable only to BW.					|
 |ReadAllTemplate	|**O**			|					|
 |DelUserTmp		|**O**			|Applicable only to BW.					|
-|SSR_DelUserTmp		|**O**			|						|
-|SSR_SetUserTmpExt	|**O**			|Applicable only to BW.					|
+|SSR_DelUserTmp		|**X**			|See Delete Enroll Data.				|
+|SSR_SetUserTmpExt	|**O**			|Todo.							|
 |GetUserTmp		|**O**			|Applicable only to BW.					|
 |SetUserTmp		|**O**			|Applicable only to BW.					|
 |GetUserTmpStr		|**O**			|Applicable only to BW.					|
@@ -204,5 +204,100 @@ The idea is to send a new user entry to overwrite the previous user data, to do 
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
+## Delete Enroll Data ##
+
+The SDK provides functions to delete:
+
+1. Individual fingerprint templates.
+2. Delete the password and if no fingerprint data or password exist, then also remove the user.
+3. Delete all the fingerprint templates of a given user.
+4. Delete a user.
+
+These options are based on the following basic operations:
+
+1. Delete indivitual fingerprint templates.
+2. Delete password.
+3. Delete all fingerprint templates.
+4. Delete user.
+5. Get fingerprint template.
+
+These procedures are explained below.
+
+### Deleting a Fingerprint Template ###
+
+To delete one fingerprint of a given user, follow the next procedure:
+
+	> packet(id=CMD_DEL_FPTMP, data=<del info>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_REFRESHDATA)
+		> packet(id=CMD_ACK_OK)
+
+Where the `del info` structure includes data about the fingerprint to delete:
+
+|Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
+|---		|---					|---		|---		|---		|
+|user id	|User's id given as a string.		|varies		|user-id width	|0		|
+|zeros		|Fixed.					|		|		|user-id width	|
+|finger index	|Fingerprint index.			|varies		|1		|24		|
+
+### Delete Password ###
+
+This can be easily done with the set user info procedure, just overwrite the password with zeros.
+
+### Delete All Fingerprint Templates ###
+
+To delete all fingerprint templates of a given user, follow the next procedure:
+
+	> packet(id=CMD_DELETE_USERTEMP, data=<del all info>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_REFRESHDATA)
+		> packet(id=CMD_ACK_OK)
+
+Where the `del all info` structure specifies the user:
+
+|Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
+|---		|---					|---		|---		|---		|
+|user sn	|Internal serial number for the user.	|varies (<)	|2		|0		|
+|		|Fixed.					|00		|1		|2		|
+
+(<): Little endian format.
+
+### Delete User ###
+
+To delete a user, follow the next procedure:
+
+	> packet(id=CMD_DELETE_USER, data=<user sn>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_REFRESHDATA)
+		> packet(id=CMD_ACK_OK)
+
+Where the user sn identifies the user, the value is stored in a 2 byte field in little endian format.
+
+### Get Fingerprint Template ###
+
+The SDK uses this function, when deleting users data, to check if the user has other fingerprint templates, request all the fingerprints one by one.
+
+The procedure uses the command `CMD_USERTEMP_RRQ`, to ask for a template:
+
+	> packet(id=CMD_USERTEMP_RRQ, data=<fp tmp req>, reply number=<rN>)
+		> packet(id=CMD_PREPARE_DATA, data=<prep struct>, reply number=<rN>)
+		> packet(id=CMD_DATA, data=<dataset>, reply number=<rN>)
+		> packet(id=CMD_ACK_OK, reply number=<rN>)
+	> packet(id=CMD_REFRESHDATA)
+		> packet(id=CMD_ACK_OK)
+
+Where the `fp tmp req` has the following fields:
+
+|Name		|Description					|Value[hex]	|Size[bytes]	|Offset		|
+|---		|---						|---		|---		|---		|
+|user sn	|Internal serial number for the user.		|varies (<)	|2		|0		|
+|finger index	|Fingerprint index, stored as a number (0-9).	|varies		|1		|2		|
+
+If the template doesn't exist, the device would reply with `CMD_ACK_ERROR`.
+
+	> packet(id=CMD_USERTEMP_RRQ, data=<fp tmp req>)
+		> packet(id=CMD_ACK_OK)
+
+## Read All Templates ##
 
 [Go to Main Page](../protocol.md)

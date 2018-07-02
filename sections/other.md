@@ -187,19 +187,6 @@ This procedure is used internally in the enrolling fingerprint procedure.
 
 ## Delete User's Fingerprint Template ##
 
-To delete one fingerprint of a given user, follow the next procedure:
-
-	> packet(id=CMD_DEL_FPTMP, data=<del info>)
-		> packet(id=CMD_ACK_OK)
-	> packet(id=CMD_REFRESHDATA)
-		> packet(id=CMD_ACK_OK)
-
-Where the `del info` structure includes data about the fingerprint to delete:
-
-|Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
-|---		|---					|---		|---		|---		|
-|user id	|User's id given as a string.		|varies		|user-id width	|0		|
-|zeros		|Fixed.					|		|		|user-id width	|
-|finger index	|Fingerprint index.			|varies		|1		|24		|
+See [data.md](./data.md).
 
 [Go to Main Page](../protocol.md)
