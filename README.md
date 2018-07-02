@@ -13,7 +13,8 @@ Protocol related operations are grouped in the following sections:
 
 - [ex_data.md](sections/ex_data.md): Protocol for the exchange of large amounts of data.
 - [terminal.md](sections/terminal.md): Protocol for procedures to get/set device parameters.
-- [data.md](sections/data.md): Protocol to manage the users data.
+- [data-user.md](sections/data-user.md): Protocol to manage the users data.
+- [data-record.md](sections/data-record.md): Protocol to manage records.
 - [access.md](sections/access.md): Protocol to manage the access settings.
 - [other.md](sections/other.md): Other procedures.
 

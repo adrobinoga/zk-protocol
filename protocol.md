@@ -402,7 +402,9 @@ For operations related to read/write of machine parameters, see [terminal.md](./
 
 ### Data Operations ###
 
-For operations to manage users data, see [data.md](./sections/data.md)
+For operations to manage users data, see [data-user.md](./sections/data-user.md).
+
+For operations to manage record data, see [data-record.md](sections/data-record.md)
 
 ### Access Operations ###
 

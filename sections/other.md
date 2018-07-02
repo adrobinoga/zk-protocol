@@ -187,6 +187,6 @@ This procedure is used internally in the enrolling fingerprint procedure.
 
 ## Delete User's Fingerprint Template ##
 
-See [data.md](./data.md).
+See [data-user.md](./data-user.md).
 
 [Go to Main Page](../protocol.md)
