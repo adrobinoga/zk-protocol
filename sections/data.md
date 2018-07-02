@@ -1,4 +1,4 @@
-# Data Operations #
+# User Data Operations #
 
 [Go to Main Page](../protocol.md)
 
@@ -8,7 +8,8 @@ Author: Alexander Marin <alexanderm2230@gmail.com>
 
 ## Current Descriptions ##
 
-Here is a list of SDK functions, from **Data-User.h** and **Data-Record** files, that shows which functions can be replicated with the current spec:
+Here is a list of SDK functions, from **Data-User.h** file, that shows which functions can be replicated with the current spec:
+
 
 |SDK function name	|Described(X=Yes, O=No)	|Notes|
 |---			|:---:			|---|
