@@ -76,7 +76,7 @@ First disable the device:
 	> packet(id=CMD_DISABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
-Then send a command with the id `CMD_DATA_WRRQ` and with a fixed payload, field description for this payload it is still unknown.
+Then send a command with the id `CMD_DATA_WRRQ` and with a fixed payload of 11 bytes, field description for this payload it is still unknown.
 
 	packet(id=CMD_DATA_WRRQ, data=0109000500000000000000)
 
@@ -106,7 +106,7 @@ The contents of each user entry, are shown in the next table:
 
 |Name			|Description							|Value[hex]						|Size[bytes]	|Offset	|
 |---			|---								|---							|---		|---	|
-|user sn		|Internal serial number for the user.				|varies (<)					|2		|0	|
+|user sn		|Internal serial number for the user.				|varies (<)						|2		|0	|
 |permission token	|Sets permission for the given user and carries enable flag.	|varies							|1		|2	|
 |password		|User password, stored as a string.				|varies							|8		|3	|
 |name(*)		|User's name.							|varies							|24		|11	|
