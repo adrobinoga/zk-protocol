@@ -182,6 +182,8 @@ The command id correspondence is given in the following table:
 |CMD_EMPTY_MIFARE	|Clear Mifare card.					|78		|004e		|
 |CMD_VERIFY_WRQ		|Change verification style of a given user.		|79		|004f		|
 |CMD_VERIFY_RRQ		|Read verification style of a given user.		|80		|0050		|
+|CMD_TMP_WRITE		|Transfer fp template from buffer.			|87		|0057		|
+|CMD_CHECKSUM_BUFFER	|Get checksum of machine's buffer.			|119		|0077		|
 |CMD_DEL_FPTMP		|Deletes fingerprint template.				|134		|0086		|
 |CMD_GET_TIME		|Request machine time.					|201		|00c9		|
 |CMD_SET_TIME		|Set machine time.					|202		|00ca		|

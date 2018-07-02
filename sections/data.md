@@ -10,44 +10,60 @@ Author: Alexander Marin <alexanderm2230@gmail.com>
 
 Here is a list of SDK functions, from **Data-User.h** and **Data-Record** files, that shows which functions can be replicated with the current spec:
 
-|SDK function name	|Described(X=Yes, O=No)	|Notes							|
-|---			|:---:			|---							|
-|ReadAllUserID		|**X**			|							|
-|GetAllUserID		|**O**			|Applicable only to BW.					|
-|GetAllUserInfo		|**O**			|Applicable only to BW.					|
-|EnableUser		|**O**			|Applicable only to BW.					|
-|SSR_EnableUser		|**X**			|							|
-|ModifyPrivilege	|**O**			|Applicable only to BW.					|
-|SetUserInfo		|**O**			|Applicable only to BW.					|
-|GetUserInfo		|**O**			|Applicable only to BW.					|
-|SetUserInfoEx		|**X**			|							|
-|GetUserInfoEx		|**X**			|							|
-|DeleteUserInfoEx	|**O**			|Todo.							|
-|SSR_GetAllUserInfo	|**X**			|Operates on the info obtained with ReadAllUserID.	|
-|SSR_GetUserInfo	|**X**			|Operates on the info obtained with ReadAllUserID.	|
-|SSR_SetUserInfo	|**X**			|							|
-|GetUserInfoByPIN2	|**O**			|Applicable only to BW.					|
-|GetUserInfoByCard	|**O**			|Applicable only to BW.					|
-|GetUserIDByPIN2	|**O**			|Applicable only to BW.					|
-|GetPIN2		|**O**			|Applicable only to BW.					|
-|GetEnrollData		|**O**			|Applicable only to BW.					|
-|SetEnrollData		|**O**			|Applicable only to BW.					|
-|DeleteEnrollData	|**O**			|Applicable only to BW.					|
-|SSR_DeleteEnrollData	|**X**			|					|
-|SSR_DeleteEnrollDataExt|**X**			|					|
-|GetEnrollDataStr	|**O**			|Applicable only to BW.					|
-|SetEnrollDataStr	|**O**			|Applicable only to BW.					|
-|ReadAllTemplate	|**O**			|					|
-|DelUserTmp		|**O**			|Applicable only to BW.					|
-|SSR_DelUserTmp		|**X**			|See Delete Enroll Data.				|
-|SSR_SetUserTmpExt	|**O**			|Todo.							|
-|GetUserTmp		|**O**			|Applicable only to BW.					|
-|SetUserTmp		|**O**			|Applicable only to BW.					|
-|GetUserTmpStr		|**O**			|Applicable only to BW.					|
-|SetUserTmpStr		|**O**			|Applicable only to BW.					|
-|GetUserTmpEx		|**O**			|					|
-
-
+|SDK function name	|Described(X=Yes, O=No)	|Notes|
+|---			|:---:			|---|
+|ReadAllUserID		|**X**			| |
+|GetAllUserID		|**O**			|Applicable only to BW.|
+|GetAllUserInfo		|**O**			|Applicable only to BW.|
+|EnableUser		|**O**			|Applicable only to BW.|
+|SSR_EnableUser		|**X**			| |
+|ModifyPrivilege	|**O**			|Applicable only to BW.|
+|SetUserInfo		|**O**			|Applicable only to BW.|
+|GetUserInfo		|**O**			|Applicable only to BW.|
+|SetUserInfoEx		|**X**			| |
+|GetUserInfoEx		|**X**			| |
+|DeleteUserInfoEx	|**O**			|Todo.|
+|SSR_GetAllUserInfo	|**X**			|Operates on the info obtained with ReadAllUserID.|
+|SSR_GetUserInfo	|**X**			|Operates on the info obtained with ReadAllUserID.|
+|SSR_SetUserInfo	|**X**			| |
+|GetUserInfoByPIN2	|**O**			|Applicable only to BW.|
+|GetUserInfoByCard	|**O**			|Applicable only to BW.|
+|GetUserIDByPIN2	|**O**			|Applicable only to BW.|
+|GetPIN2		|**O**			|Applicable only to BW.|
+|GetEnrollData		|**O**			|Applicable only to BW.|
+|SetEnrollData		|**O**			|Applicable only to BW.|
+|DeleteEnrollData	|**O**			|Applicable only to BW.|
+|SSR_DeleteEnrollData	|**X**			| |
+|SSR_DeleteEnrollDataExt|**X**			| |
+|GetEnrollDataStr	|**O**			|Applicable only to BW.|
+|SetEnrollDataStr	|**O**			|Applicable only to BW.|
+|ReadAllTemplate	|**X**			| |
+|DelUserTmp		|**O**			|Applicable only to BW.|
+|SSR_DelUserTmp		|**X**			|See Delete Enroll Data.|
+|SSR_SetUserTmpExt	|**X**			| |
+|GetUserTmp		|**O**			|Applicable only to BW.|
+|SetUserTmp		|**O**			|Applicable only to BW.|
+|GetUserTmpStr		|**O**			|Applicable only to BW.|
+|SetUserTmpStr		|**O**			|Applicable only to BW.|
+|GetUserTmpEx		|**X**			|May be done individually(see Get Fingerprint Template) or with all the templates in memory(see Read All Templates).|
+|SetUserTmpEx		|**X**			| |
+|GetUserTmpExStr	|**X**			|Almost the same as GetUserTmpEx.|
+|SetUserTmpExStr	|**X**			|Almost the same as SetUserTmpEx.|
+|SSR_GetUserTmp		|**X**			|Almost the same as GetUserTmpEx.|
+|SSR_GetUserTmpStr	|**X**			|Almost the same as GetUserTmpEx.|
+|SSR_SetUserTmp		|**X**			|Almost the same as SetUserTmpEx.|
+|SSR_SetUserTmpStr	|**X**			|Almost the same as SetUserTmpEx.|
+|GetFPTempLength	|**O**			|Nothing to do with the machine.|
+|GetFPTempLengthStr	|**O**			|Nothing to do with the machine.|
+|FPTempConvert		|**O**			| |
+|FPTempConvertStr	|**O**			| |
+|FPTempConvertNew	|**O**			| |
+|FPTempConvertNewStr	|**O**			| |
+|SetUserFace		|**O**			|Applicable only to iFace devices.
+|GetUserFace		|**O**			|Applicable only to iFace devices.
+|DelUserFace		|**O**			|Applicable only to iFace devices.
+|GetUserFaceStr		|**O**			|Applicable only to iFace devices.
+|SetUserFaceStr		|**O**			|Applicable only to iFace devices.
 
 
 ## Read All User IDs ##
@@ -299,5 +315,119 @@ If the template doesn't exist, the device would reply with `CMD_ACK_ERROR`.
 		> packet(id=CMD_ACK_OK)
 
 ## Read All Templates ##
+
+Follow the next procedure to get all the fingerprint templates.
+
+First disable the device:
+
+	> packet(id=CMD_DISABLEDEVICE)
+		> packet(id=CMD_ACK_OK)
+
+Then send a command with the id `CMD_DATA_WRRQ` and with a fixed payload, field description for this payload it is still unknown.
+
+	packet(id=CMD_DATA_WRRQ, data=0107000200000000000000)
+
+Depending of the size of the `fp templates` structure, the device may send this info in two ways:
+
+1.For "small" structures, the machine would send the info structure immediately
+
+	> packet(id=CMD_DATA_WRRQ, data=0107000200000000000000)
+		> packet(id=CMD_DATA, data=<fp templates>)
+
+2.For bigger structures see the [Exchange of Data](ex_data.md) spec.
+
+The fields of the `fp templates` structure are given in the following table:
+
+|Name			|Description			|Value[hex]	|Size[bytes]	|Offset		|
+|---			|---				|---		|---		|---		|
+|total size of fptmps	|Total size fp template entries.|varies (<)	|2		|0		|
+|zeros			|Null bytes.			|00 00		|2		|2		|
+|template1 entry	|Fingerprint template 1.	|varies		|varies(+)	|4		|
+|template2 entry	|Fingerprint template 2.	|varies		|varies(+)	|varies		|
+|...			|...				|...		|...		|varies		|
+|templateN entry	|Fingerprint template N.	|varies		|varies(+)	|varies		|
+
+(<): Little endian format.
+(+): The size of each template is store at the beginning of each template entry.
+
+The contents of each template entry, are shown in the next table:
+
+|Name		|Description					|Value[hex]		|Size[bytes]	|Offset	|
+|---		|---						|---			|---		|---	|
+|size tmp entry	|Size of fp template entry.			|(tmp size + 6) (<)	|2		|0	|
+|user sn	|Internal serial number for the user.		|varies (<)		|2		|2	|
+|fp index	|Fingerprint index, stored as a number (0-9).	|varies			|1		|4	|
+|fp flag	|Fingerprint flag.				|varies			|1		|5	|
+|fp template	|The binary fingerprint template.		|varies			|tmp size	|6	|
+
+(<): Little endian format.
+
+The fp flag indicates fingerprint type:
+
+|Fingerprint	|Value	|
+|---		|---	|
+|invalid	|0	|
+|valid		|1	|
+|duress		|3	|
+
+Finally send the enable device command to put the device in normal operation:
+
+	> packet(id=CMD_ENABLEDEVICE)
+		> packet(id=CMD_ACK_OK)
+
+Note that in order to know which user is the owner of a fingerprint you should read all the users info.
+
+## Upload Fingerprint Template ##
+
+Follow the next procedure to upload a fingerprint template.
+
+First disable the device:
+
+	> packet(id=CMD_DISABLEDEVICE)
+		> packet(id=CMD_ACK_OK)
+
+Upload a fingerprint template with the following sequence:
+
+	> packet(id=CMD_PREPARE_DATA, data=<prep struct>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_DATA, data=<fp template>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_CHECKSUM_BUFFER)
+		> packet(id=CMD_ACK_OK, data=<checksum>)
+	> packet(id=CMD_TMP_WRITE, data=<tmp wreq>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_FREE_DATA)
+		> packet(id=CMD_ACK_OK)
+
+The `prep struct` indicates the size of the data to send, it has the following fields:
+
+|Name		|Description			|Value[hex]		|Size[bytes]	|Offset	|
+|---		|---				|---			|---		|---	|
+|data size	|Size of the data to send.	|(fp template size) (<)	|2		|0	|
+|		|Fixed.				|0000			|2		|2	|
+
+(<): Little endian format.
+
+How the checksum is calculated is unknown, to check for a correct write operation, one may request the written fingerprint and apply a custom checksum to compare both templates.
+
+The command `CMD_TMP_WRITE` seems to be the command that transfers the buffer contents to the proper location of fingerprint templates.
+
+The `tmp wreq` structure has the following fields:
+
+|Name			|Description					|Value[hex]		|Size[bytes]	|Offset	|
+|---			|---						|---			|---		|---	|
+|user sn		|Internal serial number for the user.		|varies (<)		|2		|0	|
+|fp index		|Fingerprint index, stored as a number (0-9).	|varies			|1		|2	|
+|fp flag		|Fingerprint flag.				|varies			|1		|3	|
+|fp template size	|Size of the fingerprint template.		|varies (<)		|2		|4	|
+
+(<): Little endian format.
+
+The previous sequence should be executed for every upload, if there are no more templates to upload, refresh the data and then enable the device:
+
+	> packet(id=CMD_REFRESHDATA)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_ENABLEDEVICE)
+		> packet(id=CMD_ACK_OK)
 
 [Go to Main Page](../protocol.md)
