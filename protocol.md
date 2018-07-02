@@ -180,6 +180,8 @@ The command id correspondence is given in the following table:
 |CMD_DOORSTATE_RRQ	|Get door state.					|75		|004b		|
 |CMD_WRITE_MIFARE	|Write data to Mifare card.				|76		|004c		|
 |CMD_EMPTY_MIFARE	|Clear Mifare card.					|78		|004e		|
+|CMD_VERIFY_WRQ		|Change verification style of a given user.		|79		|004f		|
+|CMD_VERIFY_RRQ		|Read verification style of a given user.		|80		|0050		|
 |CMD_DEL_FPTMP		|Deletes fingerprint template.				|134		|0086		|
 |CMD_GET_TIME		|Request machine time.					|201		|00c9		|
 |CMD_SET_TIME		|Set machine time.					|202		|00ca		|
