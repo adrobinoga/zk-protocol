@@ -136,6 +136,8 @@ Where the enroll data field is a structure of 26 bytes
 
 Where the finger index is a number from 0 to 9, and it is stored as a number.
 
+**Note**: Check if the fingeprint exists for the given index and if so, it should be deleted, before sending the start enroll command.
+
 The flag may have 3 values
 
 |Value	|Meaning		|
