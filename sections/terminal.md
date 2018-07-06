@@ -254,6 +254,16 @@ This procedure comprises the request of two parameters:
 
 Where `is_rf` is a boolean variable, 1-Byte wide, that corresponds to 1 if the machine **only** supports RFID tags and 0 in the opposite case. The variable `card_on` is also a boolean variable, 1-Byte wide, that corresponds to 1 if the machine supports the RFID tags.
 
+According to the SDK:
+
+- The function returns 1 if the machine only supports the RF card.
+- The function returns 2 if the machine supports the RF card and fingerprints.
+- The function returns 0 if the machine doesn't support the RF card.
+
+That means that the value may be calculated with the next formula:
+
+	return value = card_on * (1 + not(is_rf))
+
 ### Get Vendor ###
 
 Procedure to request the vendor name:
