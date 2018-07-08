@@ -23,7 +23,7 @@ Here is a list of SDK functions, from **Data-User.h** file, that shows which fun
 |GetUserInfo		|**O**			|Applicable only to BW.|
 |SetUserInfoEx		|**X**			| |
 |GetUserInfoEx		|**X**			| |
-|DeleteUserInfoEx	|**O**			|Todo.|
+|DeleteUserInfoEx	|**X**			|Same as using SetUserInfoEx with value 0.|
 |SSR_GetAllUserInfo	|**X**			|Operates on the info obtained with ReadAllUserID.|
 |SSR_GetUserInfo	|**X**			|Operates on the info obtained with ReadAllUserID.|
 |SSR_SetUserInfo	|**X**			| |
@@ -34,8 +34,8 @@ Here is a list of SDK functions, from **Data-User.h** file, that shows which fun
 |GetEnrollData		|**O**			|Applicable only to BW.|
 |SetEnrollData		|**O**			|Applicable only to BW.|
 |DeleteEnrollData	|**O**			|Applicable only to BW.|
-|SSR_DeleteEnrollData	|**X**			| |
-|SSR_DeleteEnrollDataExt|**X**			| |
+|SSR_DeleteEnrollData	|**X**			|See Delete Enroll Data.|
+|SSR_DeleteEnrollDataExt|**X**			|See Delete Enroll Data.|
 |GetEnrollDataStr	|**O**			|Applicable only to BW.|
 |SetEnrollDataStr	|**O**			|Applicable only to BW.|
 |ReadAllTemplate	|**X**			| |
@@ -48,18 +48,18 @@ Here is a list of SDK functions, from **Data-User.h** file, that shows which fun
 |SetUserTmpStr		|**O**			|Applicable only to BW.|
 |GetUserTmpEx		|**X**			|May be done individually(see Get Fingerprint Template) or with all the templates in memory(see Read All Templates).|
 |SetUserTmpEx		|**X**			| |
-|GetUserTmpExStr	|**X**			|Almost the same as GetUserTmpEx.|
-|SetUserTmpExStr	|**X**			|Almost the same as SetUserTmpEx.|
-|SSR_GetUserTmp		|**X**			|Almost the same as GetUserTmpEx.|
-|SSR_GetUserTmpStr	|**X**			|Almost the same as GetUserTmpEx.|
-|SSR_SetUserTmp		|**X**			|Almost the same as SetUserTmpEx.|
-|SSR_SetUserTmpStr	|**X**			|Almost the same as SetUserTmpEx.|
+|GetUserTmpExStr	|**X**			|See Get Fingerprint Template.|
+|SetUserTmpExStr	|**X**			|See Upload Fingerprint Template.|
+|SSR_GetUserTmp		|**X**			|See Get Fingerprint Template.|
+|SSR_GetUserTmpStr	|**X**			|See Get Fingerprint Template.|
+|SSR_SetUserTmp		|**X**			|See Upload Fingerprint Template.|
+|SSR_SetUserTmpStr	|**X**			|See Upload Fingerprint Template.|
 |GetFPTempLength	|**O**			|Nothing to do with the machine.|
 |GetFPTempLengthStr	|**O**			|Nothing to do with the machine.|
-|FPTempConvert		|**O**			| |
-|FPTempConvertStr	|**O**			| |
-|FPTempConvertNew	|**O**			| |
-|FPTempConvertNewStr	|**O**			| |
+|FPTempConvert		|**O**			|Nothing to do with the machine.|
+|FPTempConvertStr	|**O**			|Nothing to do with the machine.|
+|FPTempConvertNew	|**O**			|Nothing to do with the machine.|
+|FPTempConvertNewStr	|**O**			|Nothing to do with the machine.|
 |SetUserFace		|**O**			|Applicable only to iFace devices.
 |GetUserFace		|**O**			|Applicable only to iFace devices.
 |DelUserFace		|**O**			|Applicable only to iFace devices.
@@ -94,7 +94,7 @@ The fields of the `users info` structure are given in the following table:
 |Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---					|---		|---		|---		|
 |size users info|Total size of user info entries.	|N*72 (<)	|2		|0		|
-|zeros		|Null bytes.				|00 00		|2		|2		|
+|		|Fixed zeros.				|00 00		|2		|2		|
 |user1 entry	|Info of user 1.			|varies		|72		|4		|
 |user2 entry	|Info of user 2.			|varies		|72		|76		|
 |...		|...					|varies		|72		|...		|
@@ -113,14 +113,17 @@ The contents of each user entry, are shown in the next table:
 |card number		|User's card number, stored as int.				|varies (<)						|4		|35	|
 |group no		|Group number to which the user belongs.			|varies							|1		|39	|
 |user tz flag		|Indicates if the user is using his own's timezones.		|varies (<)						|2		|40	|
-|tz1			|User's timezone 1.						|varies (<)						|2		|42	|
-|tz2			|User's timezone 2.						|varies (<)						|2		|44	|
-|tz3			|User's timezone 3.						|varies (<)						|2		|46	|
+|tz1			|User's timezone 1, integer.					|varies (<)(t)						|2		|42	|
+|tz2			|User's timezone 2. integer.					|varies (<)(t)						|2		|44	|
+|tz3			|User's timezone 3. integer.					|varies (<)(t)						|2		|46	|
 |user id		|User ID, stored as a string.					|varies							|9		|48	|
-|fixed			|								|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00		|15		|57	|
+|			|Fixed zeros.							|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00		|15		|57	|
 
 (<): Little endian format.
+
 (*): The name string should be terminated with the null char `\x00`, so the allowed size for user name is really 23 chars.
+
+(t): If a timezone it isn't used or the users it is using group's timezone, these values are set to zero.
 
 The permission token defines the permissions of the user and the also sets the state of the user.
 
@@ -149,6 +152,20 @@ Finally send the enable device command to put the device in normal operation:
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
+### Example of a User Entry ###
+
+This is an example of user entry:
+
+	00000000: 0D 00 00 34 34 34 00 C6  9A 80 7C 4E 65 64 00 00  ...444....|Ned..
+	00000010: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
+	00000020: 00 00 00 DE 00 00 00 02  01 00 01 00 02 00 00 00  ................
+	00000030: 35 35 35 00 00 00 00 00  00 00 00 00 00 00 00 00  555.............
+	00000040: 00 00 00 00 00 00 00 00                           ........
+
+In this case we have that the user's internal index is `0x000D`, the password is "444", and it should be noted that the password field contains non-zero bytes after the termination char, these could bytes are simply ignored.
+
+From this entry we see that the user's name is "Ned", his card number is `0x000000DE`, he belongs to the group 2, he is using his own timezones, 1 and 2, and his user id is "555".
+
 ## Enable User ##
 
 Same as Set User Info procedure, in this case just the bit `E0` should be changed.
@@ -160,13 +177,13 @@ To change the verification style of a given user, use the `CMD_VERIFY_WRQ` comma
 	> packet(id=CMD_VERIFY_WRQ, data=<verify info>)
 		> packet(id=CMD_ACK_OK)
 
-Where the verify info structure, is 24 bytes long and has the following fields:
+Where the `verify info` structure, is 24 bytes long and has the following fields:
 
 |Name			|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---			|---						|---		|---		|---	|
 |user sn		|Internal serial number for the user.		|varies (<)	|2		|0	|
 |verification mode	|Verification mode to be used, see next table.	|varies		|1		|2	|
-|zeros			|Fixed.						|zeros		|21		|3	|
+|			|Fixed zeros.					|zeros		|21		|3	|
 
 (<): Little endian format.
 
@@ -191,6 +208,14 @@ Where the verify info structure, is 24 bytes long and has the following fields:
 
 (x): The symbol "+" is used as a logic **or**, that means the verification may be performed in either way, while the symbol "&" is used as logic **and**, that means the verication needs both methods to be accepted.
 
+### Example ###
+
+In this case the user with the index `0x000D` is set to use the PIN&FP&PW verification style.
+
+	00000000: 50 50 82 7D 20 00 00 00  4F 00 EA 79 E7 84 45 00  PP.} ...O..y..E.
+	00000010: 0D 00 8D 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
+	00000020: 00 00 00 00 00 00 00 00
+
 ## Get User Verification Mode ##
 
 To get the verification style of a given user, use the `CMD_VERIFY_RRQ` command.
@@ -198,9 +223,9 @@ To get the verification style of a given user, use the `CMD_VERIFY_RRQ` command.
 	> packet(id=CMD_VERIFY_RRQ, <user sn>)
 		> packet(id=CMD_ACK_OK, data=<verify info>)
 
-Where the user sn identifies the user, the value is stored in a 2 byte field in little endian format.
+Where the `user sn` field identifies the user, the value is stored in a 2 byte field in little endian format.
 
-The `verify info` is the same structure shown in the previous section.
+The `verify info` is the same structure used for the "Set User Verification Mode" procedure.
 
 ## Set User Info ##
 
@@ -224,6 +249,17 @@ The idea is to send a new user entry to overwrite the previous user data, to do 
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
+
+### Example ###
+
+In this example, a `new entry` structure is shown, the user index is `0x000E`, the user is enabled and set with admin permissions `0x06`, is using password "123456", his name is "Nuevo", his card number is `6543`, belongs to group 1, it is using group's timezones, and his id number is "11224488".
+
+	00000000: 50 50 82 7D 50 00 00 00  08 00 FC 57 9D 8A 5C 00  PP.}P......W..\.
+	00000010: 0E 00 06 31 32 33 34 35  36 00 7C 4E 75 65 76 6F  ...123456.|Nuevo
+	00000020: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ................
+	00000030: 00 00 00 8F 19 00 00 01  00 00 00 00 00 00 00 00  ................
+	00000040: 31 31 32 32 34 34 38 38  00 00 00 00 00 00 00 00  11224488........
+	00000050: 00 00 00 00 00 00 00 00
 
 ## Delete Enroll Data ##
 
@@ -292,11 +328,11 @@ To delete a user, follow the next procedure:
 	> packet(id=CMD_REFRESHDATA)
 		> packet(id=CMD_ACK_OK)
 
-Where the user sn identifies the user, the value is stored in a 2 byte field in little endian format.
+Where the` user sn` identifies the user, the value is stored in a 2 byte field in little endian format.
 
 ### Get Fingerprint Template ###
 
-The SDK uses this function, when deleting users data, to check if the user has other fingerprint templates, request all the fingerprints one by one.
+The SDK uses this function, when deleting users data, to check if the user has other fingerprint templates, it requests all the fingerprints one by one.
 
 The procedure uses the command `CMD_USERTEMP_RRQ`, to ask for a template:
 
@@ -304,20 +340,20 @@ The procedure uses the command `CMD_USERTEMP_RRQ`, to ask for a template:
 		> packet(id=CMD_PREPARE_DATA, data=<prep struct>, reply number=<rN>)
 		> packet(id=CMD_DATA, data=<dataset>, reply number=<rN>)
 		> packet(id=CMD_ACK_OK, reply number=<rN>)
-	> packet(id=CMD_REFRESHDATA)
-		> packet(id=CMD_ACK_OK)
 
-Where the `fp tmp req` has the following fields:
+Where the `fp tmp req` structure has the following fields:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---						|---		|---		|---		|
 |user sn	|Internal serial number for the user.		|varies (<)	|2		|0		|
 |finger index	|Fingerprint index, stored as a number (0-9).	|varies		|1		|2		|
 
+And `dataset`, is just the binary fingerprint template, without any additional fields.
+
 If the template doesn't exist, the device would reply with `CMD_ACK_ERROR`.
 
 	> packet(id=CMD_USERTEMP_RRQ, data=<fp tmp req>)
-		> packet(id=CMD_ACK_OK)
+		> packet(id=CMD_ACK_ERROR)
 
 ## Read All Templates ##
 
@@ -353,7 +389,7 @@ The fields of the `fp templates` structure are given in the following table:
 |templateN entry	|Fingerprint template N.	|varies		|varies(+)	|varies		|
 
 (<): Little endian format.
-(+): The size of each template is store at the beginning of each template entry.
+(+): The size of each template is at the beginning of each template entry.
 
 The contents of each template entry, are shown in the next table:
 
@@ -381,6 +417,13 @@ Finally send the enable device command to put the device in normal operation:
 		> packet(id=CMD_ACK_OK)
 
 Note that in order to know which user is the owner of a fingerprint you should read all the users info.
+
+### Example of a Template Entry ###
+
+In this example, only the first 24 bytes are shown, the template entry is `0x04C4` bytes long, belongs to the user with index `0x000E`, the finger index is 4 and it is a valid fingerprint.
+
+	00000000: C4 04 0E 00 04 01 4D FD  53 53 32 31 00 00 04 BE  ......M.SS21....
+	00000010: BE 04 08 05 07 09 CE D0  ...
 
 ## Upload Fingerprint Template ##
 
