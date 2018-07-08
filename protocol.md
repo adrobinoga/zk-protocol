@@ -43,6 +43,7 @@ The **standalone** terminals are called in that way because they may be used wit
 Note that the communication can be done through:
 
 - TCP/IP
+- UDP/IP
 - Serial
 - USB
 
@@ -86,8 +87,24 @@ All packets have the following fields:
 (<): Little endian format.
 
 The packets can be divided in regular packets and in realtime packets:
+
 - **Regular packets**: These are the packets used for normal request and reply procedures.
-- **Realtime packets**: These are the packets used to report events, the are sent by the machine without a previous connection, if a connection exists.
+- **Realtime packets**: These are the packets used to report events, the are sent by the machine without a previous reply, if a connection exists.
+
+Both type of packets follow this general structure.
+
+**Example of a regular type packet**:
+
+	00000000: 50 50 82 7D 0C 00 00 00  0B 00 58 EF C5 C0 05 00  PP.}......X.....
+	00000010: 7E 4F 53 00
+
+In this example the size of the payload is:
+
+	0x000C
+
+And the payload is:
+
+	0B 00 58 EF C5 C0 05 00 7E 4F 53 00
 
 ### Regular Packet Payload ###
 
@@ -102,6 +119,22 @@ For regular packets the payload can be decomposed in the following fields:
 |data		|Specific data for the given command/reply.	|varies		|payload_size-8	|8	|16		|
 
 (<): Little endian format.
+
+**Example**:
+
+Following the previous example
+
+	0B 00 58 EF C5 C0 05 00 7E 4F 53 00
+
+The fields contents are:
+
+|Name		|Value[hex]	|
+|---		|---		|
+|command id	|000B		|
+|checksum	|EF58		|
+|session id	|C0C5		|
+|reply number	|0005		|
+|data		|[ 7E 4F 53 00 ]|
 
 #### Command/Reply Identifiers ####
 
@@ -208,6 +241,8 @@ See the codification of reply codes in the following table:
 
 The calculated checksum is a 16 bit integer, but it is calculated using a 32 bit integer.
 
+To calculate the checksum follow this steps:
+
 1. Sum all the contents of the payload packet(without the checksum, obviously) as integers of 16 bits in little endian format.
 2. If there is an odd number of bytes then fill the last short with zeros.
 3. Then, from this result, extract a short integer from the positions 31-16 and add this number to the short integer given by 15-0 positions. 
@@ -236,7 +271,7 @@ while j<len(payload):
 chk_32b = (chk_32b & 0xffff) + ((chk_32b & 0xffff0000)>>16)
 
 # calculate ones complement to get final checksum (in big endian)
-chk_16b = hex(chk_32b ^ 0xFFFF)
+chk_16b = chk_32b ^ 0xFFFF
 ```
 
 **Test Vectors**
@@ -285,7 +320,10 @@ The reply number should evolve like this:
 	> command sent with reply number: 0002
 		> reply received with reply numer: 0002
 
-**Note**: For large amounts of data this differs a little, see "Exchange of Data".
+**Notes**:
+
+- For large amounts of data this flow differs a little, see "Exchange of Data".
+- The reply number counter is unaffected for realtime packets.
 
 #### Data ####
 
@@ -326,6 +364,16 @@ The following table shows the codification for realtime events:
 |EF_FPFTR		|Fingerprint score in enroll procedure.	|256		|100		|
 |EF_ALARM		|Triggered alarm.			|512		|200		|
 
+#### Example ####
+
+This is an example of a realtime packet:
+
+	00000000: 50 50 82 7D 09 00 00 00  F4 01 A7 FC 00 01 00 00  PP.}............
+	00000010: 64
+
+This corresponds to a `EF_FPFTR`(`0x0100`) event, and the data field of the payload has only one byte `0x64`.
+
+Note how the `session id` field is reused and the reply number is set to zero.
 
 ## Specific Operations ##
 
