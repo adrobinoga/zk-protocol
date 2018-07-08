@@ -75,7 +75,7 @@ After sending the connection command is acknowledged, set the SDKBuild parameter
 
 When a communication key is set in the device, and if the device doesn't receive the corresponding key, then it will reply with the reply code `CMD_ACK_UNAUTH`, that means that the connection hasn't been authorized.
 
-To do this a packet with the command `CMD_AUTH` must be sent, the data field carries the communication key, the problem is that the key appears to be hashed, and the hash function it isn't known yet, so currently there is no way to reproduce this procedure. Though this feature it isn't very useful, it only prevents other clients to send commands to the machine, but if someone have access to the network, it may still see all the trafic, since the communication it isn't encrypted, given that case, an attacker could capture the hashed value and just send that value, to start a session and then send commands (like unlock door). **Therefore the network used for the system must be dedicated and kept away from intruders**.
+To do this a packet with the command `CMD_AUTH` must be sent, the data field carries the communication key, the problem is that the key appears to be hashed, and the hash function it isn't known yet, but it seems that it depends on the session id of the machine reply, so currently there is no way to reproduce this procedure. Though this feature it isn't very useful, it only prevents other clients to send commands to the machine, but if someone have access to the network, it may still see all the trafic, since the communication it isn't encrypted, given that case, an attacker could capture the hashed value, discover the hashing function through disassembling, get the commkey and then send the correct hash, given a session id, to start a session and then send commands (like unlock door). **Therefore the network used for the system must be dedicated and kept away from intruders**.
 
 ## Disconnection ##
 
@@ -228,6 +228,29 @@ Here is a list of some parameters that can be requested using that format:
 |~PIN2Width		|Integer	|
 |~IsABCPinEnable	|Bool		|
 |~T9FunOn		|Bool		|
+
+### Examples ###
+
+1.Get platform(String):
+
+	00000000: 50 50 82 7D 12 00 00 00  0B 00 B9 E6 F3 8D 0C 00  PP.}............
+	00000010: 7E 50 6C 61 74 66 6F 72  6D 00                    ~Platform.
+
+The machine may reply:
+
+	00000000: 50 50 82 7D 1D 00 00 00  D0 07 71 4C F3 8D 0C 00  PP.}......qL....
+	00000010: 7E 50 6C 61 74 66 6F 72  6D 3D 5A 45 4D 37 36 30  ~Platform=ZEM760
+	00000020: 5F 54 46 54 00                                    _TFT.
+
+2.Get Worcode(Bool):
+
+	00000000: 50 50 82 7D 11 00 00 00  0B 00 84 C2 F3 8D 0B 00  PP.}............
+	00000010: 57 6F 72 6B 43 6F 64 65  00                       WorkCode.
+
+The machine may reply:
+
+	00000000: 50 50 82 7D 13 00 00 00  D0 07 82 8A F3 8D 0B 00  PP.}............
+	00000010: 57 6F 72 6B 43 6F 64 65  3D 30 00                 WorkCode=0.
 
 ### Get Serial Number ###
 
@@ -388,6 +411,23 @@ This procedure is used to change parameters of the device (see table of Device I
 
 Also, keep in mind that some parameters are read only.
 
+#### Examples ####
+
+1.Changing Lock on timer(Integer):
+
+	00000000: 50 50 82 7D 11 00 00 00  0C 00 EB BB 84 C5 47 00  PP.}..........G.
+	00000010: 4C 6F 63 6B 4F 6E 3D 35  00                       LockOn=5.
+
+The machine may reply with `CMD_ACK_OK`.
+
+2.Changing antipassback flag(Bool):
+
+	00000000: 50 50 82 7D 19 00 00 00  0C 00 60 22 84 C5 43 00  PP.}......`"..C.
+	00000010: 41 6E 74 69 50 61 73 73  62 61 63 6B 4F 6E 3D 30  AntiPassbackOn=0
+	00000020: 00                                                .
+
+The machine may reply with `CMD_ACK_OK`.
+
 ## Get Firmware Version ##
 
 To request the firmware version send a `CMD_GET_VERSION` command.
@@ -412,7 +452,7 @@ The device should reply with a `CMD_ACK_OK` code and the current device state, s
 
 	packet(id=CMD_ACK_OK, session id=<state>)
 
-Where the state is 1-Byte wide and may have one of the following values:
+Where the state may have one of the following values:
 
 |Value	|Description				|
 |---	|---					|
@@ -422,5 +462,13 @@ Where the state is 1-Byte wide and may have one of the following values:
 |3	|Menu access state.			|
 |4	|Busy.					|
 |5	|Waiting for card writing.		|
+
+**Example**:
+
+Reply example
+
+	00000000: 50 50 82 7D 08 00 00 00  D0 07 F6 F7 02 00 37 00  PP.}..........7.
+
+In this case the device is at state 2.
 
 [Go to Main Page](../protocol.md)
