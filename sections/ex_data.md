@@ -45,9 +45,10 @@ The `data stat` structure contains the size of the data to be sent to the client
 |unknown		|Unknown value, seems to be a kind of checksum.	|varies		|4		|9	|
 
 (<): Little endian format.
+
 (*): These values show the same value, but for larger datasets we dont know if that would be the case, since it doesn't make sense to have the value duplicated.
 
-After that, send a `CMD_DATA_RDY` command to indicate the device to trasmit the data. This command carries a structure(`rdy struct`) with the following fields:
+After that, send a `CMD_DATA_RDY` command to indicate the device to trasmit the data. This command carries a structure, `rdy struct`, with the following fields:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---						|---		|---		|---	|
