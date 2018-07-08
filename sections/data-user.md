@@ -111,7 +111,11 @@ The contents of each user entry, are shown in the next table:
 |password		|User password, stored as a string.				|varies							|8		|3	|
 |name(*)		|User's name.							|varies							|24		|11	|
 |card number		|User's card number, stored as int.				|varies (<)						|4		|35	|
-|			|Fixed.								|01 00 00 00 00 00 00 00 00				|9		|39	|
+|group no		|Group number to which the user belongs.			|varies							|1		|39	|
+|user tz flag		|Indicates if the user is using his own's timezones.		|varies (<)						|2		|40	|
+|tz1			|User's timezone 1.						|varies (<)						|2		|42	|
+|tz2			|User's timezone 2.						|varies (<)						|2		|44	|
+|tz3			|User's timezone 3.						|varies (<)						|2		|46	|
 |user id		|User ID, stored as a string.					|varies							|9		|48	|
 |fixed			|								|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00		|15		|57	|
 
