@@ -92,20 +92,36 @@ See Alarm section.
 |---		|---					|---		|---		|---		|
 |user id	|User's pin number, stores as a string.	|varies		|9		|0		|
 |		|Fixed.					|zeros		|15		|9		|
-|		|Unknown.				|?		|2		|24		|
+|verify type	|Verify type.				|varies (<)	|2		|24		|
 |att time	|Time given in a special format.	|H0H1H2H3H4H5	|6		|26		|
+
+(<): Little endian format.
+
+The verify type follows the same codification given on the attendance logs.
 
 The time of attendance is given with a special format, if the time is given by the sequence:
 
 	H0 H1 H2 H3 H4 H5
 
-The date 
+The date
 
 	YEAR/MONTH/DAY HOURS:MINUTES:SECONDS
 
 can be obtained by extracting each byte as a number, and entering them in the following formula:
 
 	date = 20<H0>/<H1>/<H2> <H3>:<H4>:<H5>
+
+### Example ###
+
+This is a realtime packet of an attendance event:
+
+	00000000: 50 50 82 7D 28 00 00 00  F4 01 AC 12 01 00 00 00  PP.}(...........
+	00000010: 39 39 39 31 31 31 33 33  33 00 00 00 00 00 00 00  999111333.......
+	00000020: 00 00 00 00 00 00 00 00  01 00 12 06 19 11 29 05  ..............).
+
+The user id is "999111333", verified using the fingerprint and the date corresponds to:
+
+	2018/06/25 17:41:05
 
 ## Enrolled Finger ##
 
@@ -138,7 +154,7 @@ When performing the enrolling procedure, the machine sends a packet after a fing
 
 	rtpacket(event=EF_FPFTR, data=<score>)
 
-The score is measure of the "quality" of the fingerprint sample, the value is given as number, that may be 0 or 100(0x64).
+The `score` is a measure of the "quality" of the fingerprint sample, the value is given as number, that may be 0 or 100(0x64).
 
 ## On Verify ##
 
