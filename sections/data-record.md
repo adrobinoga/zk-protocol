@@ -28,8 +28,8 @@ Here is a list of SDK functions, from **Data-Record.h** file, that shows which f
 |GetAllSLogData			|**O**			|Only operates on memory.|
 |ClearSLog			|**X**			| |
 |GetSuperLogData2		|**O**			|Only operates on memory.|
-|ClearKeeperData		|**O**			|Todo.|
-|ClearData			|**O**			| |
+|ClearKeeperData		|**X**			| |
+|ClearData			|**X**			| |
 |GetDataFile			|**O**			| |
 |SendFile			|**O**			|Todo.|
 |ReadFile			|**O**			|Applicable only to BW.|
@@ -177,9 +177,9 @@ Each operation entry has the following fields:
 |unknown	|			|varies		|1		|3	|
 |record time	|Record log time.	|varies (<)	|4		|4	|
 |param1		|Parameter 1.		|varies (<)	|2		|8	|
-|param2		|Parameter 1.		|varies (<)	|2		|10	|
-|param3		|Parameter 1.		|varies (<)	|2		|12	|
-|param4		|Parameter 1.		|varies (<)	|2		|14	|
+|param2		|Parameter 2.		|varies (<)	|2		|10	|
+|param3		|Parameter 3.		|varies (<)	|2		|12	|
+|param4		|Parameter 4.		|varies (<)	|2		|14	|
 
 (<): Little endian format.
 
@@ -210,6 +210,29 @@ To clear the operation records, first disable the device, then send a `CMD_CLEAR
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
+
+## Clear Data ##
+
+To clear data on the device use the command `CMD_CLEAR_DATA`.
+
+	> packet(id=CMD_DISABLEDEVICE)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_CLEAR_DATA, data=<data type>)
+		> packet(id=CMD_ACK_OK)
+	> packet(id=CMD_REFRESHDATA)
+		> packet(id=CMD_ACK_OK)
+
+The `data type` is just one byte with the type of data to delete:
+
+|Data			|Value	|
+|---			|---	|
+|Attendance records	|1	|
+|Fingerprint templates	|2	|
+|None			|3	|
+|Operation records	|4	|
+|User information	|5	|
+
+If the data type is ommited the device will delete all the info.
 
 ## Refresh Data ##
 
