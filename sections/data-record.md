@@ -15,7 +15,7 @@ Here is a list of SDK functions, from **Data-Record.h** file, that shows which f
 |SSR_SetDeviceData		|**O**			|This is only for newer firmware.|
 |SSR_GetDeviceData		|**O**			|This is only for newer firmware.|
 |ReadGeneralLogData		|**X**			| |
-|ReadAllGLogData		|**O**			|Same as ReadGeneralLogData.|
+|ReadAllGLogData		|**X**			|Same as ReadGeneralLogData.|
 |GetGeneralLogData		|**O**			|Applicable only to BW.|
 |SSR_GetGeneralLogData		|**O**			|Only operates on memory.|
 |GetAllGLogData			|**O**			|Applicable only to BW.|
@@ -23,7 +23,7 @@ Here is a list of SDK functions, from **Data-Record.h** file, that shows which f
 |GetGeneralExtLogData		|**O**			|Applicable only to BW.|
 |ClearGLog			|**X**			| |
 |ReadSuperLogData		|**X**			| |
-|ReadAllSLogData		|**O**			|Same as ReadSuperLogData.|
+|ReadAllSLogData		|**X**			|Same as ReadSuperLogData.|
 |GetSuperLogData		|**O**			|Only operates on memory.|
 |GetAllSLogData			|**O**			|Only operates on memory.|
 |ClearSLog			|**X**			| |
@@ -50,7 +50,7 @@ Then send a command with the id `CMD_DATA_WRRQ` and with a fixed payload of 11 b
 
 	packet(id=CMD_DATA_WRRQ, data=010d000000000000000000)
 
-Depending of the size of the att rec structure, the device may send this info in two ways:
+Depending of the size of the `att rec` structure, the device may send this info in two ways:
 
 1.For "small" structures, the machine would send the info structure immediately
 
@@ -88,14 +88,41 @@ Each attendance entry has the following fields:
 
 Where the time is encoded in the same format used in set/get device time procedure, see [terminal.md](./terminal.md).
 
+The verification type codification is:
+
+|Verification type	|Value	|
+|---			|---	|
+|Password		|0	|
+|Fingerprint		|1	|
+|RF card		|2	|
+
+The verification state codification is:
+
+|Verification state	|Value	|
+|---			|---	|
+|Check in (default)	|0	|
+|Check out		|1	|
+|Break out		|2	|
+|Break in		|3	|
+|OT in			|4	|
+|OT out			|5	|
+
 Finally send the enable device command to put the device in normal operation:
 
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
+### Example of an Attendance Entry ###
+
+This is an example of an attendance entry, the user index is `0x000D` and his id number is "999111333", the verification type is 1, and the encoded time is given by `0x2368B36B`.
+
+	00000000: 0D 00 39 39 39 31 31 31  33 33 33 00 00 00 00 00  ..999111333.....
+	00000010: 00 00 00 00 00 00 00 00  00 00 01 6B B3 68 23 00  ...........k.h#.
+	00000020: 00 00 00 00 FF 00 00 00                           ........
+
 ## Clear All Attendance Records ##
 
-To clear the attendance records, first disable the device, then send a CMD_CLEAR_ATTLOG command, refresh the data and finally enable the device.
+To clear the attendance records, first disable the device, then send a `CMD_CLEAR_ATTLOG` command, refresh the data and finally enable the device.
 
 	> packet(id=CMD_DISABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
@@ -106,7 +133,7 @@ To clear the attendance records, first disable the device, then send a CMD_CLEAR
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
-Note that this will delete all the attendance records, time interval delete operations are only supported on newer firmware versions.
+Note that this will delete all the attendance records, time-interval delete operations are only supported on newer firmware versions.
 
 ## Read Operation Records ##
 
@@ -119,7 +146,7 @@ Then send a command with the id `CMD_DATA_WRRQ` and with a fixed payload of 11 b
 
 	packet(id=CMD_DATA_WRRQ, data=0122000000000000000000)
 
-Depending of the size of the att rec structure, the device may send this info in two ways:
+Depending of the size of the `ops rec` structure, the device may send this info in two ways:
 
 1.For "small" structures, the machine would send the info structure immediately
 
@@ -163,9 +190,17 @@ Finally send the enable device command to put the device in normal operation:
 	> packet(id=CMD_ENABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
 
+**Note**: Codification of operation IDs and corresponding param interpretation, remains as a ToDo.
+
+### Example Operation Record Entry ###
+
+Here the operation id is 6, the encoded time is `0x23689BC2`, param1 is `0x0003`, param2 is `0x0000`, param3 is `0x0007` and param4 is `0x0502`.
+
+	00000000: 00 00 06 2A C2 9B 68 23  03 00 00 00 07 00 02 05  ...*..h#........
+
 ## Clear All Operation Records ##
 
-To clear the operation records, first disable the device, then send a CMD_CLEAR_OPLOG command, refresh the data and finally enable the device.
+To clear the operation records, first disable the device, then send a `CMD_CLEAR_OPLOG` command, refresh the data and finally enable the device.
 
 	> packet(id=CMD_DISABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
