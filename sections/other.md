@@ -18,7 +18,7 @@ Here is a list of SDK functions, from **Data-Other.h** and **Other.h** files, th
 |ClearAdministrators		|**X**			| |
 |EnableDevice			|**X**			| |
 |EnableClock			|**X**			| |
-|DisableDeviceWithTimeOut	|**X**			|This can be done with the enable command.|
+|DisableDeviceWithTimeOut	|**X**			| |
 |PowerOffDevice			|**X**			| |
 |RestartDevice			|**X**			| |
 |StartEnroll			|**O**			|Only applicable to BW devices.|
@@ -71,6 +71,13 @@ To disable the device send:
 
 	> packet(id=CMD_DISABLEDEVICE)
 		> packet(id=CMD_ACK_OK)
+
+To disable the device with a timeout, include the time in the data field:
+
+	> packet(id=CMD_DISABLEDEVICE, data=<timeout>)
+		> packet(id=CMD_ACK_OK)
+
+Where the `timeout` is the number of seconds that the device will remain disable, is given as a 4 byte integer stored in little endian format.
 
 ## Enable Clock ##
 
