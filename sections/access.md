@@ -43,12 +43,12 @@ Here is a list of SDK functions, from **Access.h** file, that shows which functi
 
 ## Get User Group ##
 
-New users are by default in group 1, but a user may belong to 1 of 100 possible groups, to get the group a user belongs to, send the following command:
+New users are by default in group 1, but a user may belong to 1 of 100 possible groups, to get the group to which a user belongs to, send the following command:
 
 	> packet(id=CMD_USERGRP_RRQ, <user sn>)
 		> packet(id=CMD_ACK_OK, <group number>)
 
-Where user sn is a field 4 bytes long, where the first byte stores the user's internal index, as a number.
+Where `user sn` is a field 4 bytes long, where the first byte stores the user's internal index, as a number.
 
 The reply data field is 1 byte long, with the number of the group to which the user belongs.
 
@@ -70,14 +70,14 @@ Where the command data field has the following fields:
 
 ## Get TZ Info ##
 
-To request definition of a timezone send the command CMD_TZ_RRQ:
+To request definition of a timezone send the command `CMD_TZ_RRQ`:
 
 	> packet(id=CMD_TZ_RRQ, data=<timezone index>)
 		> packet(id=CMD_ACK_OK, data=<timezone info>)
 
 Where the timezone index stores the number of the timezone to read, it is stored as a number of 4 bytes and in little endian format.
 
-The result, timezone info, stores the definition of the timezone:
+The result,` timezone info`, stores the definition of the timezone:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---						|---		|---		|---		|
@@ -109,16 +109,26 @@ Will be given by:
 
 The numbers are given directly as numbers so there is no need for ascii conversion.
 
+### Example ###
+
+This is a reply packet for a get timezone command:
+
+	00000000: 50 50 82 7D 28 00 00 00  D0 07 2F A5 12 63 27 00  PP.}(...../..c'.
+	00000010: 30 00 11 0C 11 0D 11 25  11 25 11 25 11 25 11 25  0......%.%.%.%.%
+	00000020: 11 25 11 25 11 25 11 25  11 25 11 23 11 24 A7 1C  .%.%.%.%.%.#.$..
+
+Here the timezone number is 48, and the sunday timezone is `17:12 TO 17:13`.
+
 ## Set TZ Info ##
 
-To change a timezone definition send a CMD_TZ_WRQ, with the new timezone definition:
+To change a timezone definition send a `CMD_TZ_WRQ`, with the new timezone definition:
 
 	> packet(id=CMD_TZ_WRQ, data=<new timezone info>)
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_REFRESHDATA)
 		> packet(id=CMD_ACK_OK)
 
-The new timezone info structure is very similar to the structure given for a get operation, check the following table:
+The `new timezone info` structure is very similar to the structure given for a get operation, check the following table:
 
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---						|---		|---		|---		|
@@ -133,16 +143,18 @@ The new timezone info structure is very similar to the structure given for a get
 
 (<): Little endian format.
 
+To prohibit access for a whole day just use a start time bigger than the end time.
+
 ## Get Unlock Combination ##
 
-Group verification may be used to require that users from different groups verify at same to garant access, by default users use this type of verification, but usually using the unlock combination 01 00 00 00 00, which means that only a user of the group 1 (themselves) is needed to garant access.
+Group verification may be used to require that users from different groups verify at same to grant access, by default users use the unlock combination 01 00 00 00 00, which means that only a user of the group 1 (themselves) is needed to grant access.
 
-There may be 10 unlock combinations, to request an unlock combination send the command CMD_ULG_RRQ with the combination number to request.
+There may be 10 unlock combinations, to request an unlock combination send the command `CMD_ULG_RRQ` with the combination number to request.
 
 	> packet(id=CMD_ULG_RRQ, <comb req>)
 		> packet(id=CMD_ACK_OK, <comb grps>)
 
-The structure <comb req> has the following fields
+The structure `<comb req>` has the following fields
 
 |Name		|Description		|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---			|---		|---		|---		|
@@ -163,34 +175,43 @@ And the response has the following fields:
 
 (<): Little endian format.
 
-The valid groups field indicates how many groups are included in the current combianation, if that number is less than 5, then the unused values are set to 0.
+The `valid groups` field indicates how many groups are included in the current combianation, if that number is less than 5, then the unused values are set to 0.
+
+### Example ###
+
+This is a reply of a get unlock combination command:
+
+	00000000: 50 50 82 7D 10 00 00 00  D0 07 B5 93 12 63 5D 00  PP.}.........c].
+	00000010: 07 01 02 00 00 00 02 00                           ........
+
+The combination 7 only has two groups, 1 and 2.
 
 ## Set Unlock Combination ##
 
-To set an unlock combination send the command CMD_ULG_WRQ.
+To set an unlock combination send the command `CMD_ULG_WRQ`.
 
 	> packet(id=CMD_ULG_WRQ, <comb grps>)
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_REFRESHDATA)
 		> packet(id=CMD_ACK_OK)
 
-Where the data field comb grps, has the same fields of the response for the get unlock combination command.
+Where the data field `comb grps`, has the same fields of the response for the get unlock combination command.
 
 ## Get Group Info ##
 
-To request parameters of a group, like the timezones, verify style and valid holidays flag, send the CMD_GRPTZ_RRQ command:
+To request parameters of a group, like the timezones, verify style and valid holidays flag, send the `CMD_GRPTZ_RRQ` command:
 
 	> packet(id=CMD_GRPTZ_RRQ, <grp req>)
 		> packet(id=CMD_ACK_OK, <grp settings>)
 
-Where the grp req has the following fields:
+Where the `grp req` has the following fields:
 
 |Name		|Description	|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---		|---		|---		|---		|
 |group no	|Group number.	|varies		|1		|0		|
 |		|Fixed.		|zeros		|7		|1		|
 
-The response data field, grp settings, has the following fields:
+The response data field, `grp settings`, has the following fields:
 
 |Name		|Description						|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---							|---		|---		|---		|
@@ -202,7 +223,7 @@ The response data field, grp settings, has the following fields:
 
 (<): Little endian format.
 
-The field verify+holiday may be further broken down in the following fields:
+The field `verify+holiday` may be further broken down in the following fields:
 
 |B7			|B6-B0		|
 |---			|---		|
@@ -210,7 +231,7 @@ The field verify+holiday may be further broken down in the following fields:
 
 If the holiday flag is equal to 1, the holidays are considered.
 
-The verifiy style is almost the same codification used in the user verification mode, the only difference is the bit B7.
+The verifiy style is almost the same codification used in the user verification mode, the only difference is the bit `B7`.
 
 |Verification Mode(x)	|Value[base 10]	|Value[hex]	|
 |---			|---		|---		|
@@ -230,32 +251,40 @@ The verifiy style is almost the same codification used in the user verification 
 |PIN&FP&PW		|13		|d		|
 |FP&RF+PIN		|14		|e		|
 
+### Example ###
+
+This is a reply packet of a get group info command:
+
+	00000000: 50 50 82 7D 10 00 00 00  D0 07 79 F1 12 63 56 00  PP.}......y..cV.
+	00000010: 4D 08 00 07 00 06 00 8E                           M.......
+
+In this case the group 77 has the timezones 8,7 and 6, the verification style is `FP&RF+PIN` and the holiday flag is set.
 ## Set Group Info ##
 
-To create or modify an existing group send a command CMD_GRPTZ_WRQ with the new settings:
+To create or modify an existing group send a command `CMD_GRPTZ_WRQ` with the new settings:
 
 	> packet(id=CMD_GRPTZ_WRQ, <grp settings>)
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_REFRESHDATA)
 		> packet(id=CMD_ACK_OK)
 
-Where the data field grp settings has the same fields given on the get group info procedure.
+Where the data field `grp settings` has the same fields given on the get group info procedure.
 
 ## Get User Timezones ##
 
-To request the user timezones send a CMD_USERTZ_RRQ command with the user index.
+To request the user timezones send a `CMD_USERTZ_RRQ` command with the user index.
 
 	> packet(id=CMD_USERTZ_RRQ, <usertz req>)
 		> packet(id=CMD_ACK_OK, <user tz>)
 
-Where the usertz req is only the user's internal index on machine, followed by 3 zeros (user sn in lil-endian (?)).
+Where the `usertz req` is only the user's internal index on machine, followed by 3 zeros.
 
 |Name		|Description		|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---			|---		|---		|---		|
 |user sn	|Users internal index.	|varies		|1		|0		|
 |		|Fixed.			|zeros		|3		|1		|
 
-The structure user tz has the following fields:
+The structure `user tz` has the following fields:
 
 |Name		|Description								|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---									|---		|---		|---		|
@@ -268,18 +297,18 @@ The structure user tz has the following fields:
 
 If the user has less than 3 timezones, the unused fields are set to zero.
 
-To check if the user is using the group's timezones, just request the user timezones and check the flag group tz flag.
+To check if the user is using the group's timezones, just request the user timezones and check the flag `group tz flag`.
 
 ## Set User Timezones ##
 
-To set user's timezones use the command CMD_USERTZ_WRQ:
+To set user's timezones use the command `CMD_USERTZ_WRQ`:
 
 	> packet(id=CMD_USERTZ_WRQ, <new tz>)
 		> packet(id=CMD_ACK_OK)
 	> packet(id=CMD_REFRESHDATA)
 		> packet(id=CMD_ACK_OK)
 
-Where the new tz structure has the following fields:
+Where the `new tz` structure has the following fields:
 
 |Name		|Description								|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---									|---		|---		|---		|
@@ -291,11 +320,11 @@ Where the new tz structure has the following fields:
 
 If there are less than 3 timezones, the unused fields are set to zero.
 
-To make the user use the group's timezones just sent a new tz structure with the user tz flag and timezones, set to zero.
+To make the user use the group's timezones just sent a `new tz` structure with the `user tz flag` and timezones, set to zero.
 
 ## Door Unlock ##
 
-Send the command CMD_UNLOCK to open the door, the doors remains open for the specified delay(seconds).
+Send the command `CMD_UNLOCK` to open the door, the doors remains open for the specified delay(seconds).
 
 	> packet(id=CMD_UNLOCK, data=<delay>)
 		> packet(id=CMD_ACK_OK)
@@ -304,12 +333,12 @@ Where the delay is given as a 4 byte number stored in little endian format.
 
 ## Get Door State ##
 
-To request the door state send the command CMD_DOORSTATE_RRQ
+To request the door state send the command `CMD_DOORSTATE_RRQ`
 
 
 	> packet(id=CMD_DOORSTATE_RRQ)
 		> packet(id=CMD_ACK_OK, data=<door flag>)
 
-Where the door flag is just one byte with the value 1 if the door is open, otherwise if the door is closed, the value is 0.
+Where the `door flag` is just one byte with the value 1 if the door is open, otherwise if the door is closed, the value is 0.
 
 [Go to Main Page](../protocol.md)
