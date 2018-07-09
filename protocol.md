@@ -84,7 +84,7 @@ For each timezone there is one definition for each day of the week, i.e. per tim
 
 Each device may store a maximum of 50 timezones.
 
-To open a door is needed that at least one of the timezones is satisfied, this is a necessary condition but not sufficient to open a door, that means that the timezones are **ORed**.
+To open a door is needed that at least one of the timezones is satisfied, that means that the timezones are **ORed**.
 
 It is possible to make a user use the timezones of the group instead of his own timezones.
 
