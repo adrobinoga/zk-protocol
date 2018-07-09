@@ -32,6 +32,77 @@ The documentation provided by ZKTeco, sometimes shows acronyms without prior def
 |SSR		|Self service recorder|
 
 
+## Managing Attendance ##
+
+Before going into the actual protocol it would be convenient to clarify the type of things that can be done with ZKAccess Standalone Devices.
+
+### User Properties ###
+
+A user is the model of an employee, an employee has a list of attributes:
+
+- ID number: This could be the working ID, students ID, license ID, but should be unique.
+- Index: This is an internal index associated with the user, it is used in a large set of commands to refer to a given user, a 'common user' doesn't have knowledge of this number, and it may be different across different devices.
+- Name: The name of the employee, this is optional.
+- Permissions: This sets the level of actions that a user may perform, regular employees are 'common users' while the IT admins may be 'superadmins'.
+- Enable flag: A user may be enabled or disabled.
+- Card number: This corresponds to the number of an RFID card, this depends on the verify style.
+- Password: Password to access, this depends on the verify style.
+- Group: New users are by default on group 1, but there may be 100 different groups, a user can only belong to one group, they could inherit permissions and settings from the group to which they belong, at the same time a group may have 3 timezones and a verify style.
+- Timezones: A user may have a maximum of three timezones.
+- Verify style: Sets the way the user verifies on the machine, e.g. use password and fingerprint, use RFID card or fingerprint.
+
+### Granting Access ###
+
+To grant access there are several tweaks, timezones, group unlock combinations, multiple verification modes and holidays, there is also a daylight correction but this it isn't considered.
+
+To open door a user must comply with the following conditions:
+
+- Perform a successful verification.
+- Be in a valid timezone.
+- Be in a a group for a valid unlock combination.
+
+#### Verify Style ####
+
+There are several combinations of allowed verification modes, they are all a subset of the following three options:
+
+- Fingerprint.
+- RFID card.
+- Password.
+- User ID.
+
+A user may have a personal verify style or could inherit the verify style from the group.
+
+To open a door, the user must perform a successful verification, this is a necessary condition but not sufficient.
+
+#### Timezones ####
+
+A timezone is just a definition of allowed hours to validate:
+
+	(Start time):(End time)
+
+For each timezone there is one definition for each day of the week, i.e. per timezone we have 7 time intervals.
+
+Each device may store a maximum of 50 timezones.
+
+To open a door is needed that at least one of the timezones is satisfied, this is a necessary condition but not sufficient to open a door, that means that the timezones are **ORed**.
+
+It is possible to make a user use the timezones of the group instead of his own timezones.
+
+A user is commonly assigned only one timezone.
+
+### Unlock Combination ###
+
+To open a door the user should be in a valid unlock combination, per device there may be 10 unlock combinations, each unlock combination may consist of a maximum of 5 groups:
+
+	combination N: G1 G2 G3 G4 G5
+
+To open a door at least one unlock combination must be satisfied, that means that users from the 5 different groups G1-G5 must validate at the same time to unlock the door. Though it isn't required that the 5 groups must be defined, so a common unlock combination is:
+
+	01: 01 00 00 00 00
+
+This combination indicates that only is needed a user from the group 1 to satisfy the unlock combination 1.
+
+
 ## Protocol Overview ##
 
 The **standalone** terminals are called in that way because they may be used without any communication with a "coordinator" or "manager", like the ZKAccess software, so the protocol is designed to:
