@@ -16,6 +16,7 @@ Protocol related operations are grouped in the following sections:
 - [data-user.md](sections/data-user.md): Protocol to manage the users data.
 - [data-record.md](sections/data-record.md): Protocol to manage records.
 - [access.md](sections/access.md): Protocol to manage the access settings.
+- [realtime.md](section/realtime.md): Protocol of the realtime events.
 - [other.md](sections/other.md): Other procedures.
 
 ## Develop ##
