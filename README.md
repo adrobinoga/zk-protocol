@@ -19,6 +19,8 @@ Protocol related operations are grouped in the following sections:
 - [realtime.md](sections/realtime.md): Protocol of the realtime events.
 - [other.md](sections/other.md): Other procedures.
 
+Also, check the repo of the python lib [PyZK](https://github.com/adrobinoga/pyzk).
+
 ## Develop ##
 
 Currently this spec is intended for devices of the TFT series, but there's no reason to keep it that way.
