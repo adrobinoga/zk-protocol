@@ -44,6 +44,13 @@ This packets are sent without prior request since they depend on external situat
 
 Where the `session id` of the client reply is the same as the id set from the connection, and the `reply number` is the same of the incoming packet which for realtime packets, happens to be `0000`.
 
+## Enable Realtime ##
+
+To be able to receive realtime packets, you must send a packet with the command `CMD_REG_EVENT` and a fixed data field of 4 bytes:
+
+	> packet(id=CMD_REG_EVENT, data=ffff0000)
+		> packet(id=CMD_ACK_OK)
+
 ## Alarm ##
 
 There may be several causes to trigger the alarm, this info is included in the realtime packet sent to the device, the general form of the packet is given by:
