@@ -1,6 +1,8 @@
 # zk-protocol #
 A precise, clean and easy to understand description of the protocol used in ZKTeco devices.
 
+**Check the [PyZatt lib](https://github.com/adrobinoga/pyzatt)!!!**
+
 ## Getting Started ##
 
 This project is part of an effort to build an alternative for ZKTeco's Standalone devices, you should begin by reading the user manual and the Standalone SDK docs, that can be found in ZKTeco's SDKs Download page.
@@ -18,8 +20,6 @@ Protocol related operations are grouped in the following sections:
 - [access.md](sections/access.md): Protocol to manage the access settings.
 - [realtime.md](sections/realtime.md): Protocol of the realtime events.
 - [other.md](sections/other.md): Other procedures.
-
-Also, check the repo of the python lib [PyZK](https://github.com/adrobinoga/pyzk).
 
 ## Develop ##
 
