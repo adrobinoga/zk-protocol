@@ -151,8 +151,7 @@ All packets have the following fields:
 |Name		|Description			|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---				|---		|---		|---	|
 |start		|Indicates start of packet.	|5050827d	|4		|0	|
-|payload size	|Size of packet payload.	|payload_size(<)|2		|4	|
-|zeros		|Null bytes.			|0000		|2		|6	|
+|payload size	|Size of packet payload.	|payload_size(<)|4		|4	|
 |payload	|Packet payload.		|varies		|payload_size	|8	|
 
 (<): Little endian format.
@@ -171,7 +170,7 @@ Both type of packets follow this general structure.
 
 In this example the size of the payload is:
 
-	0x000C
+	0x0000000C
 
 And the payload is:
 
@@ -316,7 +315,7 @@ To calculate the checksum follow this steps:
 
 1. Sum all the contents of the payload packet(without the checksum, obviously) as integers of 16 bits in little endian format.
 2. If there is an odd number of bytes then fill the last short with zeros.
-3. Then, from this result, extract a short integer from the positions 31-16 and add this number to the short integer given by 15-0 positions. 
+3. Then, from this result, extract a short integer from the positions 31-16 and add this number to the short integer given by 15-0 positions.
 4. Calculate the ones-complement to the number obtained in step 3.
 
 
@@ -336,7 +335,7 @@ while j<len(payload):
 	# accumulate
 	chk_32b = chk_32b + num_16b
 	# increment index by 2 bytes
-	j += 2 
+	j += 2
 
 # adds the two first bytes to the other two bytes
 chk_32b = (chk_32b & 0xffff) + ((chk_32b & 0xffff0000)>>16)
@@ -463,8 +462,7 @@ Is a compact form to refer to a packet with the format:
 |Name		|Description					|Value[hex]	|Size[bytes]	|Offset	|
 |---		|---						|---		|---		|---	|
 |start		|Indicates start of packet.			|5050827d	|4		|0	|
-|payload size	|Size of packet payload.			|payload_size(<)|2		|4	|
-|zeros		|Null bytes.					|0000		|2		|6	|
+|payload size	|Size of packet payload.			|payload_size(<)|4		|4	|
 |**id**		|Command identifier/Reply code.			|varies(<)	|2		|8	|
 |checksum	|Checksum.					|varies(<)	|2		|10	|
 |session id	|Session id.					|varies(<)	|2		|12	|

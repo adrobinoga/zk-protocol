@@ -93,8 +93,7 @@ The fields of the `users info` structure are given in the following table:
 
 |Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---					|---		|---		|---		|
-|size users info|Total size of user info entries.	|N*72 (<)	|2		|0		|
-|		|Fixed zeros.				|00 00		|2		|2		|
+|size users info|Total size of user info entries.	|N*72 (<)	|4		|0		|
 |user1 entry	|Info of user 1.			|varies		|72		|4		|
 |user2 entry	|Info of user 2.			|varies		|72		|76		|
 |...		|...					|varies		|72		|...		|
@@ -381,8 +380,7 @@ The fields of the `fp templates` structure are given in the following table:
 
 |Name			|Description			|Value[hex]	|Size[bytes]	|Offset		|
 |---			|---				|---		|---		|---		|
-|total size of fptmps	|Total size fp template entries.|varies (<)	|2		|0		|
-|zeros			|Null bytes.			|00 00		|2		|2		|
+|total size of fptmps	|Total size fp template entries.|varies (<)	|4		|0		|
 |template1 entry	|Fingerprint template 1.	|varies		|varies(+)	|4		|
 |template2 entry	|Fingerprint template 2.	|varies		|varies(+)	|varies		|
 |...			|...				|...		|...		|varies		|
