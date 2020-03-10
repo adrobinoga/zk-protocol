@@ -63,8 +63,7 @@ The fields of the `att rec` structure are given in the following table:
 
 |Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---					|---		|---		|---		|
-|att_size	|Total size of user attendance entries.	|N*40 (<)	|2		|0		|
-|zeros		|Null bytes.				|00 00		|2		|2		|
+|att_size	|Total size of user attendance entries.	|N*40 (<)	|4		|0		|
 |att1 entry	|Attendance log 1.			|varies		|40		|4		|
 |att2 entry	|Attendance log 2.			|varies		|40		|44		|
 |...		|...					|varies		|40		|...		|
@@ -159,8 +158,7 @@ The fields of the `ops rec` structure are given in the following table:
 
 |Name		|Description				|Value[hex]	|Size[bytes]	|Offset		|
 |---		|---					|---		|---		|---		|
-|ops_size	|Total size of operation record entries.|N*16 (<)	|2		|0		|
-|zeros		|Null bytes.				|00 00		|2		|2		|
+|ops_size	|Total size of operation record entries.|N*16 (<)	|4		|0		|
 |oplog1 entry	|Operation log 1.			|varies		|16		|4		|
 |oplog2 entry	|Operation log 2.			|varies		|16		|20		|
 |...		|...					|varies		|16		|...		|
