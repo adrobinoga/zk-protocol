@@ -1,6 +1,5 @@
-    /**
-    *    I'm not in the mood to explain the code.
-    **/
+
+
     public static int calculateChecksum32(byte[] buffer) {
         int ecx = 0; // sum
         for (byte b : buffer) {
