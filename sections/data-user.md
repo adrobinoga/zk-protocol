@@ -454,7 +454,7 @@ The `prep struct` indicates the size of the data to send, it has the following f
 
 (<): Little endian format.
 
-The checksum is a bit complicated to compute, check out [../code/Checksum32_CMD119.java](the code is java).
+The checksum is a bit complicated to compute, check out [the code is java](../code/Checksum32_CMD119.java).
 
 The command `CMD_TMP_WRITE` seems to be the command that transfers the buffer contents to the proper location of fingerprint templates.
 
