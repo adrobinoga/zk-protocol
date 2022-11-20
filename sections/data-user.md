@@ -454,7 +454,7 @@ The `prep struct` indicates the size of the data to send, it has the following f
 
 (<): Little endian format.
 
-How the checksum is calculated is unknown, to check for a correct write operation, one may request the written fingerprint and apply a custom checksum to compare both templates.
+The checksum is a bit complicated to compute, check out [../code/Checksum32_CMD119.java](the code is java).
 
 The command `CMD_TMP_WRITE` seems to be the command that transfers the buffer contents to the proper location of fingerprint templates.
 
